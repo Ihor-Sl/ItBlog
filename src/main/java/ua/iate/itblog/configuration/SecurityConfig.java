@@ -21,12 +21,15 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/login").permitAll();
+                    auth.requestMatchers("/registration").permitAll();
                     auth.requestMatchers("/index").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .formLogin(formLogin -> {
+                    formLogin.loginPage("/login");
                     formLogin.defaultSuccessUrl("/index");
                     formLogin.usernameParameter("email");
+                    formLogin.permitAll();
                 })
                 .rememberMe(rememberMe -> {
                     rememberMe.tokenValiditySeconds(T_30_DAYS_IN_SECONDS);
