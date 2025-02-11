@@ -33,11 +33,11 @@ public class UserService {
         return user;
     }
 
-    public boolean existByEmail(String email) {
+    public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
-    public boolean existByUsername(String username) {
+    public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
 }

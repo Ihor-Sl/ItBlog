@@ -31,10 +31,10 @@ public class AuthController {
     @PostMapping("/registration")
     public String registrationPost(@ModelAttribute("user") @Valid CreateUserRequest userRequest,
                                    BindingResult bindingResult) {
-        if (userService.existByEmail(userRequest.getEmail())) {
+        if (userService.existsByEmail(userRequest.getEmail())) {
             bindingResult.rejectValue("email", "error.user", "Email already exist!");
         }
-        if (userService.existByUsername(userRequest.getUsername())) {
+        if (userService.existsByUsername(userRequest.getUsername())) {
             bindingResult.rejectValue("username", "error.user", "Username already exist!");
         }
         if (bindingResult.hasErrors()) {
