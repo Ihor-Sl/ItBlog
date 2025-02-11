@@ -34,16 +34,10 @@ public class UserService {
     }
 
     public boolean existByEmail(String email) {
-        if (userRepository.findByEmail(email).isPresent()) {
-            return true;
-        }
-        return false;
+        return userRepository.existsByEmail(email);
     }
 
     public boolean existByUsername(String username) {
-        if (userRepository.findByUsername(username).isPresent()) {
-            return true;
-        }
-        return false;
+        return userRepository.existsByUsername(username);
     }
 }

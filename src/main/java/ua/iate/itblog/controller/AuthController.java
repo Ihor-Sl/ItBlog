@@ -16,16 +16,16 @@ import ua.iate.itblog.service.UserService;
 public class AuthController {
     private final UserService userService;
 
-    @GetMapping("/registration")
-    public String registrationGet(Model model) {
-        model.addAttribute("user", new CreateUserRequest());
-        return "registration";
-    }
-
     @GetMapping("/login")
     public String loginGet(Model model) {
         model.addAttribute("user", new CreateUserRequest());
         return "login";
+    }
+
+    @GetMapping("/registration")
+    public String registrationGet(Model model) {
+        model.addAttribute("user", new CreateUserRequest());
+        return "registration";
     }
 
     @PostMapping("/registration")

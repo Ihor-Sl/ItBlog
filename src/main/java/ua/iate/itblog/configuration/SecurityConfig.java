@@ -27,6 +27,7 @@ public class SecurityConfig {
                 })
                 .formLogin(formLogin -> {
                     formLogin.loginPage("/login");
+                    formLogin.defaultSuccessUrl("/index");
                     formLogin.usernameParameter("email");
                     formLogin.permitAll();
                 })
