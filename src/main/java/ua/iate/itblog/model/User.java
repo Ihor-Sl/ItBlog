@@ -1,10 +1,14 @@
 package ua.iate.itblog.model;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
@@ -15,7 +19,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User {
     @Id
     private String id;
+
+    @Indexed(unique = true)
+    @NotBlank(message = "Email cannot be empty!")
+    @Email(message = "Invalid email format!")
     private String email;
+
+    @NotBlank(message = "Password cannot be empty!")
+    @Size(min = 8, message = "Password must be at least 8 characters long!")
     private String password;
+
+    @Indexed(unique = true)
+    @NotBlank(message = "Username cannot be empty!")
+    @Size(min = 4, max = 64, message = "Username must be between 4 and 64 characters!")
     private String username;
 }

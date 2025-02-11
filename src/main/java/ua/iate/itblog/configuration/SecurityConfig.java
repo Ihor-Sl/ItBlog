@@ -20,13 +20,14 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/login").permitAll();
-                    auth.requestMatchers("/index").permitAll();
+                    auth.requestMatchers("/login", "/registration").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .formLogin(formLogin -> {
-                    formLogin.defaultSuccessUrl("/index");
+                    formLogin.loginPage("/login");
                     formLogin.usernameParameter("email");
+                    formLogin.defaultSuccessUrl("/index");
+                    formLogin.permitAll();
                 })
                 .rememberMe(rememberMe -> {
                     rememberMe.tokenValiditySeconds(T_30_DAYS_IN_SECONDS);
