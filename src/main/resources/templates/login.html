@@ -6,18 +6,18 @@
 </head>
 <body>
 <form method="post" th:action="@{/login}" th:object="${user}">
-    <div class="email-field">
-        <label for="email" class="email-label">Email:</label>
-        <input id="email" class="email-input" type="email" th:field="*{email}">
+    <div>
+        <label for="email">Email:</label>
+        <input id="email" type="email" th:field="*{email}">
     </div>
-    <div class="password-field">
-        <label for="password" class="password-label">Password:</label>
-        <input id="password" class="password-input" type="password" th:field="*{password}">
+    <div>
+        <label for="password">Password:</label>
+        <input id="password" type="password" th:field="*{password}">
     </div>
-    <div class="alert-massage" role="alert" th:if="${param.error}">
+    <div role="alert" th:if="${param.error}">
         <p>Invalid email or password!</p>
     </div>
-    <button type="submit" class="submit-button">Submit</button>
+    <button type="submit">Submit</button>
 </form>
 <a th:href="@{/registration}">Don't have account?</a>
 </body>

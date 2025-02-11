@@ -8,40 +8,40 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import ua.iate.itblog.model.User;
+import ua.iate.itblog.model.CreateUserRequest;
 import ua.iate.itblog.service.UserService;
 
 @Controller
 @RequiredArgsConstructor
-public class PageController {
+public class AuthController {
     private final UserService userService;
 
     @GetMapping("/registration")
     public String registrationGet(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new CreateUserRequest());
         return "registration";
     }
 
     @GetMapping("/login")
     public String loginGet(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new CreateUserRequest());
         return "login";
     }
 
     @PostMapping("/registration")
-    public String registrationPost(@ModelAttribute("user") @Valid User user,
-                                   BindingResult bindingResult,
-                                   Model model) {
+    public String registrationPost(@ModelAttribute("user") @Valid CreateUserRequest userRequest,
+                                   BindingResult bindingResult) {
+        if (userService.existByEmail(userRequest.getEmail())) {
+            bindingResult.rejectValue("email", "error.user", "Email already exist!");
+        }
+        if (userService.existByUsername(userRequest.getUsername())) {
+            bindingResult.rejectValue("username", "error.user", "Username already exist!");
+        }
         if (bindingResult.hasErrors()) {
             return "registration";
         }
-        try {
-            userService.registrationCheck(user);
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "registration";
-        }
+
+        userService.createUser(userRequest);
         return "redirect:/login";
     }
-
 }

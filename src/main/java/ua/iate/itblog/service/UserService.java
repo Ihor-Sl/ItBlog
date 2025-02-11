@@ -3,6 +3,7 @@ package ua.iate.itblog.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ua.iate.itblog.model.CreateUserRequest;
 import ua.iate.itblog.model.User;
 import ua.iate.itblog.repository.UserRepository;
 
@@ -18,11 +19,31 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void registrationCheck(User user) throws Exception {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new Exception("Email already exist!");
-        }
+    public void createUser(CreateUserRequest userRequest) {
+        User user = mapToUser(userRequest);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+    }
+
+    private User mapToUser(CreateUserRequest userRequest) {
+        User user = new User();
+        user.setEmail(userRequest.getEmail());
+        user.setPassword(userRequest.getPassword());
+        user.setUsername(userRequest.getUsername());
+        return user;
+    }
+
+    public boolean existByEmail(String email) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean existByUsername(String username) {
+        if (userRepository.findByUsername(username).isPresent()) {
+            return true;
+        }
+        return false;
     }
 }

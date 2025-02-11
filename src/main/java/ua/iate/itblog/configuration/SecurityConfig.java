@@ -15,19 +15,19 @@ public class SecurityConfig {
 
     public static final int T_30_DAYS_IN_SECONDS = 2592000;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/login", "/registration").permitAll();
+                    auth.requestMatchers("/login").permitAll();
+                    auth.requestMatchers("/registration").permitAll();
+                    auth.requestMatchers("/index").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .formLogin(formLogin -> {
                     formLogin.loginPage("/login");
                     formLogin.usernameParameter("email");
-                    formLogin.defaultSuccessUrl("/index");
                     formLogin.permitAll();
                 })
                 .rememberMe(rememberMe -> {
