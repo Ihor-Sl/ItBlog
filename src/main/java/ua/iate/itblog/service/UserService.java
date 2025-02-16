@@ -1,6 +1,7 @@
 package ua.iate.itblog.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.iate.itblog.model.CreateUserRequest;
@@ -39,5 +40,21 @@ public class UserService {
 
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
+    }
+
+    public User findById(String id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id " + id));
+    }
+
+    public void updateUser(User updatedUser, String id) {
+        User user = findById(id);
+        user.setUsername(updatedUser.getUsername());
+        userRepository.save(user);
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email " + email));
     }
 }
