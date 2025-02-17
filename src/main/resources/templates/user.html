@@ -10,6 +10,8 @@
     <h2>Information about</h2>
     <hr>
     <p> Username: <span th:text="*{user.username}"></span></p>
+
+    <a th:if="${currentUsername == user.username}" th:href="@{/users/me/edit}">Edit profile</a>
 </div>
 </body>
 </html>

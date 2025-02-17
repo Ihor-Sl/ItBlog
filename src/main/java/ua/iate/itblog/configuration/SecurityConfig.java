@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import ua.iate.itblog.security.CustomAuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -17,20 +16,18 @@ public class SecurityConfig {
     public static final int T_30_DAYS_IN_SECONDS = 2592000;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
-                                                   CustomAuthenticationSuccessHandler authenticationSuccessHandler) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/login").permitAll();
                     auth.requestMatchers("/registration").permitAll();
-                    auth.requestMatchers("/index").permitAll();
                     auth.requestMatchers("/users/{id}").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .formLogin(formLogin -> {
                     formLogin.loginPage("/login");
-                    formLogin.successHandler(authenticationSuccessHandler);
+                    formLogin.defaultSuccessUrl("/users/me");
                     formLogin.usernameParameter("email");
                     formLogin.permitAll();
                 })

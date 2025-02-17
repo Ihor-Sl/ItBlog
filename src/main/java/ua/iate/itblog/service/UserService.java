@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.iate.itblog.model.CreateUserRequest;
+import ua.iate.itblog.model.UpdateUserRequest;
 import ua.iate.itblog.model.User;
 import ua.iate.itblog.repository.UserRepository;
 
@@ -47,9 +48,9 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id " + id));
     }
 
-    public void updateUser(User updatedUser, String id) {
+    public void updateUser(UpdateUserRequest userRequest, String id) {
         User user = findById(id);
-        user.setUsername(updatedUser.getUsername());
+        user.setUsername(userRequest.getUsername());
         userRepository.save(user);
     }
 
