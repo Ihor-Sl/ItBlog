@@ -22,6 +22,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/login").permitAll();
                     auth.requestMatchers("/registration").permitAll();
+                    auth.requestMatchers("/users/me").authenticated();
                     auth.requestMatchers("/users/{id}").permitAll();
                     auth.anyRequest().authenticated();
                 })
