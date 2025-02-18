@@ -22,12 +22,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/login").permitAll();
                     auth.requestMatchers("/registration").permitAll();
-                    auth.requestMatchers("/index").permitAll();
+                    auth.requestMatchers("/users/me").authenticated();
+                    auth.requestMatchers("/users/{id}").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .formLogin(formLogin -> {
                     formLogin.loginPage("/login");
-                    formLogin.defaultSuccessUrl("/index");
+                    formLogin.defaultSuccessUrl("/users/me");
                     formLogin.usernameParameter("email");
                     formLogin.permitAll();
                 })
