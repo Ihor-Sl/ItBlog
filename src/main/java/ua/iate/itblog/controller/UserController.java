@@ -2,12 +2,15 @@ package ua.iate.itblog.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ua.iate.itblog.model.UpdateUserRequest;
 import ua.iate.itblog.model.User;
+import ua.iate.itblog.security.CustomUserDetails;
+import ua.iate.itblog.security.SecurityUtils;
 import ua.iate.itblog.service.UserService;
 
 
@@ -43,16 +46,17 @@ public class UserController {
 
     @PostMapping("/me/edit")
     public String editUserPost(@ModelAttribute("user") UpdateUserRequest updateUserRequest,
-                               Authentication authentication,
+                               @AuthenticationPrincipal CustomUserDetails customUserDetails,
                                BindingResult bindingResult) {
-        if (userService.existsByUsername(updateUserRequest.getUsername())) {
+        if (!customUserDetails.getUser().getUsername().equals(updateUserRequest.getUsername()) && userService.existsByUsername(updateUserRequest.getUsername())) {
             bindingResult.rejectValue("username", "error.user", "Username already exist!");
         }
         if (bindingResult.hasErrors()) {
             return "user-edit";
         }
-        User user = userService.findByEmail(authentication.getName());
-        userService.updateUser(updateUserRequest, user.getId());
+        User user = userService.updateUser(updateUserRequest, customUserDetails.getUser().getId());
+        SecurityUtils.updateSecurityContext(user);
+
         return "redirect:/users/me";
     }
 }

@@ -48,10 +48,10 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id " + id));
     }
 
-    public void updateUser(UpdateUserRequest userRequest, String id) {
+    public User updateUser(UpdateUserRequest userRequest, String id) {
         User user = findById(id);
         user.setUsername(userRequest.getUsername());
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     public User findByEmail(String email) {
