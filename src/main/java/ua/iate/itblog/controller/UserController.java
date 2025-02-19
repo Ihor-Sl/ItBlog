@@ -1,5 +1,6 @@
 package ua.iate.itblog.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,6 +27,8 @@ public class UserController {
         User user = userService.findByEmail(email);
         model.addAttribute("user", user);
         model.addAttribute("currentUsername", user.getUsername());
+        model.addAttribute("technologyStack", user.getTechnologyStack());
+        model.addAttribute("socialMediaLinks", user.getLinksToMedia());
         return "user";
     }
 
@@ -33,6 +36,8 @@ public class UserController {
     public String userGet(@PathVariable("id") String id, Model model) {
         User user = userService.findById(id);
         model.addAttribute("user", user);
+        model.addAttribute("technologyStack", user.getTechnologyStack());
+        model.addAttribute("socialMediaLinks", user.getLinksToMedia());
         return "user";
     }
 
@@ -45,13 +50,17 @@ public class UserController {
     }
 
     @PostMapping("/me/edit")
-    public String editUserPost(@ModelAttribute("user") UpdateUserRequest updateUserRequest,
+    public String editUserPost(@ModelAttribute("user") @Valid UpdateUserRequest updateUserRequest,
+                               BindingResult bindingResult,
                                @AuthenticationPrincipal CustomUserDetails customUserDetails,
-                               BindingResult bindingResult) {
+                               Model model) {
         if (!customUserDetails.getUser().getUsername().equals(updateUserRequest.getUsername()) && userService.existsByUsername(updateUserRequest.getUsername())) {
             bindingResult.rejectValue("username", "error.user", "Username already exist!");
         }
+        boolean checkListLinksToMedia = userService.checkListLinksToMedia(updateUserRequest.getLinksToMedia());
+        boolean checkTechnologyStack = userService.checkTechnologyStack(updateUserRequest.getTechnologyStack());
         if (bindingResult.hasErrors()) {
+            model.addAttribute("user", updateUserRequest);
             return "user-edit";
         }
         User user = userService.updateUser(updateUserRequest, customUserDetails.getUser().getId());
