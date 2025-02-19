@@ -6,17 +6,18 @@ import org.springframework.web.multipart.MultipartFile;
 import ua.iate.itblog.validation.annotation.ValidFile;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-public class AvatarValidator implements ConstraintValidator<ValidFile, MultipartFile> {
+public class ValidFileValidator implements ConstraintValidator<ValidFile, MultipartFile> {
 
     private int maxSize;
-    private List<String> allowedExtensions;
+    private Set<String> allowedExtensions;
 
     @Override
     public void initialize(ValidFile constraintAnnotation) {
         this.maxSize = constraintAnnotation.maxSize();
-        this.allowedExtensions = Arrays.asList(constraintAnnotation.allowedExtensions());
+        this.allowedExtensions = new HashSet<>(Arrays.asList(constraintAnnotation.allowedExtensions()));
     }
 
     @Override
@@ -27,13 +28,13 @@ public class AvatarValidator implements ConstraintValidator<ValidFile, Multipart
         }
         if (multipartFile.getSize() > maxSize) {
             constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("Avatar can't be more than " + maxSize + " MB!")
+            constraintValidatorContext.buildConstraintViolationWithTemplate("File can't be more than " + maxSize + " MB!")
                     .addConstraintViolation();
             return false;
         }
-        if (!allowedExtensions.contains(multipartFile.getContentType())) {
+        if (!allowedExtensions.isEmpty() && !allowedExtensions.contains(multipartFile.getContentType())) {
             constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("Avatar must be an image!")
+            constraintValidatorContext.buildConstraintViolationWithTemplate("File must be in " + String.join(", ", allowedExtensions))
                     .addConstraintViolation();
             return false;
         }

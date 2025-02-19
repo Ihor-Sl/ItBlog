@@ -23,7 +23,7 @@ public class UpdateUserRequest {
     @Size(min = 4, max = 64, message = "Username must be between 4 and 64 characters!")
     private String username;
 
-    @ValidFile
+    @ValidFile(maxSize = 3 * 1024 * 1024, allowedExtensions = {"jpeg", "webp", "png"})
     private MultipartFile avatar;
 
     @Past(message = "Date of birth must be in the past!")
@@ -36,5 +36,5 @@ public class UpdateUserRequest {
     private List<@Size(max = 64, message = "Technology stack entry cannot be more than 64 characters!") String> technologyStack;
 
     @Size(max = 5, message = "The size of links of median can't be more than 5!")
-    private List<@URL String> linksToMedia;
+    private List<@URL(message = "Invalid URL!") String> linksToMedia;
 }

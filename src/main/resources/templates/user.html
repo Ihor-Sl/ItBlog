@@ -16,13 +16,13 @@
 
     <p th:if="${user.technologyStack == null or user.technologyStack.isEmpty()}">Technology stack is empty</p>
     <p th:if="${user.technologyStack != null and !user.technologyStack.isEmpty()}">Technology stack:</p>
-    <ul th:unless="${user.technologyStack == null or user.technologyStack.isEmpty()}">
+    <ul th:if="${user.technologyStack != null and !user.technologyStack.isEmpty()}">
         <li th:each="tech : ${user.technologyStack}" th:text="${tech}"></li>
     </ul>
 
     <p th:if="${user.linksToMedia == null or user.linksToMedia.isEmpty()}">Social media links are empty</p>
     <p th:if="${user.linksToMedia != null and !user.linksToMedia.isEmpty()}">Social media links:</p>
-    <ul th:unless="${user.linksToMedia == null or user.linksToMedia.isEmpty()}">
+    <ul th:if="${user.linksToMedia != null and !user.linksToMedia.isEmpty()}">
         <li th:each="link : ${user.linksToMedia}">
             <a th:href="${link}" th:text="${link}" target="_blank"></a>
         </li>

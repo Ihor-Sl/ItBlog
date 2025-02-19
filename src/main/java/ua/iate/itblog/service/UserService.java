@@ -9,6 +9,7 @@ import ua.iate.itblog.model.UpdateUserRequest;
 import ua.iate.itblog.model.User;
 import ua.iate.itblog.repository.UserRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -32,7 +33,7 @@ public class UserService {
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
         user.setUsername(userRequest.getUsername());
-        user.setCreatedAt(userRequest.getCreatedAt());
+        user.setCreatedAt(LocalDate.now());
         return user;
     }
 
