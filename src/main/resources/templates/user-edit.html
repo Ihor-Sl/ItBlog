@@ -5,11 +5,44 @@
     <title>Title</title>
 </head>
 <body>
-<form method="post" th:object="${user}" th:action="@{/users/me/edit}">
+<form method="post" th:object="${user}" th:action="@{/users/me/edit}" enctype="multipart/form-data">
+    <div>
+        <label for="avatar">New avatar:</label>
+        <input type="file" id="avatar" th:field="*{avatar}">
+        <p th:if="${#fields.hasErrors('avatar')}" th:errors="*{avatar}"></p>
+    </div>
     <div>
         <label for="username">New username:</label>
         <input type="text" id="username" th:field="*{username}">
         <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+    </div>
+    <div>
+        <label for="dateOfBirth">New date of birth:</label>
+        <input type="date" id="dateOfBirth" th:field="*{dateOfBirth}">
+        <p th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></p>
+    </div>
+    <div>
+        <label for="location">New location:</label>
+        <input type="text" id="location" th:field="*{location}">
+        <p th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></p>
+    </div>
+    <div>
+        <p>Technology stack:</p>
+        <div th:each="i : ${#numbers.sequence(0, 9)}">
+            <label th:for="'technologyStack' + ${i}"></label>
+            <input type="text" th:id="'technologyStack' + ${i}" th:field="*{technologyStack[__${i}__]}"/>
+            <p th:if="${#fields.hasErrors('technologyStack[' + i + ']')}" th:errors="*{technologyStack[__${i}__]}"></p>
+            <br/>
+        </div>
+    </div>
+    <div>
+        <p>Social links:</p>
+        <div th:each="i : ${#numbers.sequence(0, 4)}">
+            <label th:for="'linksToMedia' + ${i}"></label>
+            <input type="text" th:id="'linksToMedia' + ${i}" th:field="*{linksToMedia[__${i}__]}"/>
+            <p th:if="${#fields.hasErrors('linksToMedia[' + i + ']')}" th:errors="*{linksToMedia[__${i}__]}"></p>
+            <br/>
+        </div>
     </div>
     <button type="submit">Submit</button>
 </form>

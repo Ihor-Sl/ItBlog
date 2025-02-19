@@ -9,6 +9,7 @@ import ua.iate.itblog.model.UpdateUserRequest;
 import ua.iate.itblog.model.User;
 import ua.iate.itblog.repository.UserRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -32,6 +33,7 @@ public class UserService {
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
         user.setUsername(userRequest.getUsername());
+        user.setCreatedAt(LocalDate.now());
         return user;
     }
 
@@ -50,6 +52,13 @@ public class UserService {
 
     public User updateUser(UpdateUserRequest userRequest, String id) {
         User user = findById(id);
+        user.setAvatar(userRequest.getAvatar().getName());
+        user.setDateOfBirth(userRequest.getDateOfBirth());
+        user.setLocation(userRequest.getLocation());
+        userRequest.getTechnologyStack().removeIf(s -> s == null || s.trim().isBlank());
+        user.setTechnologyStack(userRequest.getTechnologyStack());
+        userRequest.getLinksToMedia().removeIf(s -> s == null || s.trim().isBlank());
+        user.setLinksToMedia(userRequest.getLinksToMedia());
         user.setUsername(userRequest.getUsername());
         return userRepository.save(user);
     }

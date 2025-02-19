@@ -8,6 +8,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Document(collection = "users")
 @Data
 @Builder
@@ -24,4 +27,16 @@ public class User {
 
     @Indexed(unique = true)
     private String username;
+
+    private String avatar;
+
+    private LocalDate dateOfBirth;
+
+    private String location;
+
+    private List<String> technologyStack;
+
+    private List<String> linksToMedia;
+
+    private LocalDate createdAt;
 }
