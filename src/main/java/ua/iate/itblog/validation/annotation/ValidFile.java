@@ -12,8 +12,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {AvatarValidator.class})
-public @interface ValidAvatar {
+public @interface ValidFile {
     String message() default "";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
+    int maxSize() default 5 * 1024 * 1024;
+    String[] allowedExtensions() default {"jpeg", "png", "webp"};
 }

@@ -15,7 +15,6 @@ public class SecurityConfig {
 
     public static final int T_30_DAYS_IN_SECONDS = 2592000;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity

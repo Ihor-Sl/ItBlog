@@ -28,58 +28,21 @@
     </div>
     <div>
         <p>Technology stack:</p>
-        <label for="technologyStack1"></label>
-        <input type="text" id="technologyStack1" th:field="*{technologyStack[0]}">
-        <label for="technologyStack2"></label>
-        <input type="text" id="technologyStack2" th:field="*{technologyStack[1]}">
-        <label for="technologyStack3"></label>
-        <input type="text" id="technologyStack3" th:field="*{technologyStack[2]}">
-        <label for="technologyStack4"></label>
-        <input type="text" id="technologyStack4" th:field="*{technologyStack[3]}">
-        <label for="technologyStack5"></label>
-        <input type="text" id="technologyStack5" th:field="*{technologyStack[4]}">
-        <br>
-        <label for="technologyStack6"></label>
-        <input type="text" id="technologyStack6" th:field="*{technologyStack[5]}">
-        <label for="technologyStack7"></label>
-        <input type="text" id="technologyStack7" th:field="*{technologyStack[6]}">
-        <label for="technologyStack8"></label>
-        <input type="text" id="technologyStack8" th:field="*{technologyStack[7]}">
-        <label for="technologyStack9"></label>
-        <input type="text" id="technologyStack9" th:field="*{technologyStack[8]}">
-        <label for="technologyStack10"></label>
-        <input type="text" id="technologyStack10" th:field="*{technologyStack[9]}">
-
-        <p th:each="err : ${#fields.errors('technologyStack')}" th:text="${err}"></p>
-
+        <div th:each="i : ${#numbers.sequence(0, 9)}">
+            <label th:for="'technologyStack' + ${i}"></label>
+            <input type="text" th:id="'technologyStack' + ${i}" th:field="*{technologyStack[__${i}__]}"/>
+            <p th:if="${#fields.hasErrors('technologyStack[' + i + ']')}" th:errors="*{technologyStack[__${i}__]}"></p>
+            <br/>
+        </div>
     </div>
     <div>
         <p>Social links:</p>
-        <label for="linksToMedia1"></label>
-        <input type="text" id="linksToMedia1" th:field="*{linksToMedia[0]}">
-        <p th:if="${#fields.hasErrors('linksToMedia[0]')}" th:errors="*{linksToMedia[0]}"></p>
-        <br>
-
-        <label for="linksToMedia2"></label>
-        <input type="text" id="linksToMedia2" th:field="*{linksToMedia[1]}">
-        <p th:if="${#fields.hasErrors('linksToMedia[1]')}" th:errors="*{linksToMedia[1]}"></p>
-        <br>
-
-
-        <label for="linksToMedia3"></label>
-        <input type="text" id="linksToMedia3" th:field="*{linksToMedia[2]}">
-        <p th:if="${#fields.hasErrors('linksToMedia[2]')}" th:errors="*{linksToMedia[2]}"></p>
-        <br>
-
-        <label for="linksToMedia4"></label>
-        <input type="text" id="linksToMedia4" th:field="*{linksToMedia[3]}">
-        <p th:if="${#fields.hasErrors('linksToMedia[3]')}" th:errors="*{linksToMedia[3]}"></p>
-        <br>
-
-        <label for="linksToMedia5"></label>
-        <input type="text" id="linksToMedia5" th:field="*{linksToMedia[4]}">
-        <p th:if="${#fields.hasErrors('linksToMedia[4]')}" th:errors="*{linksToMedia[4]}"></p>
-        <br>
+        <div th:each="i : ${#numbers.sequence(0, 4)}">
+            <label th:for="'linksToMedia' + ${i}"></label>
+            <input type="text" th:id="'linksToMedia' + ${i}" th:field="*{linksToMedia[__${i}__]}"/>
+            <p th:if="${#fields.hasErrors('linksToMedia[' + i + ']')}" th:errors="*{linksToMedia[__${i}__]}"></p>
+            <br/>
+        </div>
     </div>
     <button type="submit">Submit</button>
 </form>

@@ -3,25 +3,35 @@ package ua.iate.itblog.validation.validator;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.web.multipart.MultipartFile;
-import ua.iate.itblog.validation.annotation.ValidAvatar;
+import ua.iate.itblog.validation.annotation.ValidFile;
 
+import java.util.Arrays;
 import java.util.List;
 
-public class AvatarValidator implements ConstraintValidator<ValidAvatar, MultipartFile> {
+public class AvatarValidator implements ConstraintValidator<ValidFile, MultipartFile> {
 
-    private static final long MAX_FILE_SIZE = 5000;
+    private int maxSize;
+    private List<String> allowedExtensions;
+
+    @Override
+    public void initialize(ValidFile constraintAnnotation) {
+        this.maxSize = constraintAnnotation.maxSize();
+        this.allowedExtensions = Arrays.asList(constraintAnnotation.allowedExtensions());
+    }
 
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext constraintValidatorContext) {
 
-        if (multipartFile.getSize() > MAX_FILE_SIZE) {
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            return true;
+        }
+        if (multipartFile.getSize() > maxSize) {
             constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("Avatar can't be more than " + MAX_FILE_SIZE + " MB!")
+            constraintValidatorContext.buildConstraintViolationWithTemplate("Avatar can't be more than " + maxSize + " MB!")
                     .addConstraintViolation();
             return false;
         }
-        List<String> allowedMimeTypes = List.of("image/jpeg", "image/png", "image/webp");
-        if (!allowedMimeTypes.contains(multipartFile.getContentType())) {
+        if (!allowedExtensions.contains(multipartFile.getContentType())) {
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate("Avatar must be an image!")
                     .addConstraintViolation();

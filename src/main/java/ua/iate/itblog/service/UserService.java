@@ -51,39 +51,15 @@ public class UserService {
 
     public User updateUser(UpdateUserRequest userRequest, String id) {
         User user = findById(id);
-        if (userRequest.getAvatar() != null) {
-            user.setAvatar(userRequest.getAvatar().getName());
-        }
-        if (userRequest.getDateOfBirth() != null) {
-            user.setDateOfBirth(userRequest.getDateOfBirth());
-        }
-        if (userRequest.getLocation() != null) {
-            user.setLocation(userRequest.getLocation());
-        }
-        if (userRequest.getTechnologyStack() != null) {
-            user.setTechnologyStack(userRequest.getTechnologyStack());
-        }
-        if (userRequest.getLinksToMedia() != null) {
-            user.setLinksToMedia(userRequest.getLinksToMedia());
-        }
+        user.setAvatar(userRequest.getAvatar().getName());
+        user.setDateOfBirth(userRequest.getDateOfBirth());
+        user.setLocation(userRequest.getLocation());
+        userRequest.getTechnologyStack().removeIf(s -> s == null || s.trim().isBlank());
+        user.setTechnologyStack(userRequest.getTechnologyStack());
+        userRequest.getLinksToMedia().removeIf(s -> s == null || s.trim().isBlank());
+        user.setLinksToMedia(userRequest.getLinksToMedia());
         user.setUsername(userRequest.getUsername());
         return userRepository.save(user);
-    }
-
-    public boolean checkTechnologyStack(List<String> technologyStack) {
-        if (technologyStack == null || technologyStack.isEmpty()) {
-            return false;
-        }
-        technologyStack.removeIf(s -> s == null || s.trim().isEmpty());
-        return !technologyStack.isEmpty();
-    }
-
-    public boolean checkListLinksToMedia(List<String> linksToMedia) {
-        if (linksToMedia == null || linksToMedia.isEmpty()) {
-            return false;
-        }
-        linksToMedia.removeIf(s -> s == null || s.trim().isEmpty());
-        return !linksToMedia.isEmpty();
     }
 
     public User findByEmail(String email) {

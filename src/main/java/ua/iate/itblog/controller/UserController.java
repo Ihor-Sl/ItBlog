@@ -27,8 +27,6 @@ public class UserController {
         User user = userService.findByEmail(email);
         model.addAttribute("user", user);
         model.addAttribute("currentUsername", user.getUsername());
-        model.addAttribute("technologyStack", user.getTechnologyStack());
-        model.addAttribute("socialMediaLinks", user.getLinksToMedia());
         return "user";
     }
 
@@ -36,8 +34,6 @@ public class UserController {
     public String userGet(@PathVariable("id") String id, Model model) {
         User user = userService.findById(id);
         model.addAttribute("user", user);
-        model.addAttribute("technologyStack", user.getTechnologyStack());
-        model.addAttribute("socialMediaLinks", user.getLinksToMedia());
         return "user";
     }
 
@@ -57,8 +53,6 @@ public class UserController {
         if (!customUserDetails.getUser().getUsername().equals(updateUserRequest.getUsername()) && userService.existsByUsername(updateUserRequest.getUsername())) {
             bindingResult.rejectValue("username", "error.user", "Username already exist!");
         }
-        boolean checkListLinksToMedia = userService.checkListLinksToMedia(updateUserRequest.getLinksToMedia());
-        boolean checkTechnologyStack = userService.checkTechnologyStack(updateUserRequest.getTechnologyStack());
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", updateUserRequest);
             return "user-edit";
