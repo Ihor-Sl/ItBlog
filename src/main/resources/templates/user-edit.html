@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:text="${user.username}">Edit</title>
 </head>
 <body>
 <form method="post" th:object="${user}" th:action="@{/users/me/edit}" enctype="multipart/form-data">
@@ -12,7 +12,7 @@
         <p th:if="${#fields.hasErrors('avatar')}" th:errors="*{avatar}"></p>
     </div>
     <div>
-        <label for="username">New username:</label>
+        <label th:text="#{common.user.field.username}" for="username">Username</label>:
         <input type="text" id="username" th:field="*{username}">
         <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
     </div>
@@ -44,7 +44,7 @@
             <br/>
         </div>
     </div>
-    <button type="submit">Submit</button>
+    <button th:text="#{templates.user-edit.submit}" type="submit">Edit</button>
 </form>
 </body>
 </html>
