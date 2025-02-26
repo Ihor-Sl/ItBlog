@@ -17,8 +17,7 @@ public class AuthController {
     private final UserService userService;
 
     @GetMapping("/login")
-    public String loginGet(Model model) {
-        model.addAttribute("user", new CreateUserRequest());
+    public String loginGet() {
         return "login";
     }
 
@@ -32,10 +31,10 @@ public class AuthController {
     public String registrationPost(@ModelAttribute("user") @Valid CreateUserRequest userRequest,
                                    BindingResult bindingResult) {
         if (userService.existsByEmail(userRequest.getEmail())) {
-            bindingResult.rejectValue("email", "error.user", "Email already exist!");
+            bindingResult.rejectValue("email", "errors.user.email.exist");
         }
         if (userService.existsByUsername(userRequest.getUsername())) {
-            bindingResult.rejectValue("username", "error.user", "Username already exist!");
+            bindingResult.rejectValue("username", "errors.user.username.exist");
         }
         if (bindingResult.hasErrors()) {
             return "registration";

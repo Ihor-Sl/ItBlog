@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserRequest {
-    @NotBlank(message = "Username cannot be empty!")
-    @Size(min = 4, max = 64, message = "Username must be between 4 and 64 characters!")
+    @NotBlank(message = "{errors.user.username.not-null}")
+    @Size(min = 4, max = 64, message = "{errors.user.username.size}")
     private String username;
 }
