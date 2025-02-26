@@ -2,23 +2,23 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title th:text="#{templates.login.html.title}">Login</title>
 </head>
 <body>
-<form method="post" th:action="@{/login}" th:object="${user}">
+<form method="post" th:action="@{/login}">
     <div>
-        <label for="email">Email:</label>
-        <input id="email" type="email" th:field="*{email}">
+        <label for="name" th:text="#{common.user.field.email}">Email:</label>
+        <input id="name" name="email" type="email">
     </div>
     <div>
-        <label for="password">Password:</label>
-        <input id="password" type="password" th:field="*{password}">
+        <label for="password" th:text="#{common.user.field.password}">Password:</label>
+        <input id="password" name="password" type="password">
     </div>
     <div role="alert" th:if="${param.error}">
-        <p>Invalid email or password!</p>
+        <p th:text="#{templates.login.error}">Invalid email or password!</p>
     </div>
-    <button type="submit">Submit</button>
+    <button type="submit" th:text="#{templates.login.submit}">Login</button>
 </form>
-<a th:href="@{/registration}">Don't have account?</a>
+<a th:href="@{/registration}" th:text="#{templates.login.registration.link}">Don't have account?</a>
 </body>
 </html>
