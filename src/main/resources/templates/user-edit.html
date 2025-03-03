@@ -7,7 +7,7 @@
 <body>
 <form method="post" th:object="${user}" th:action="@{/users/me/edit}" enctype="multipart/form-data">
     <div>
-        <label for="avatar">New avatar:</label>
+        <label for="avatar" th:text="#{templates.user-edit.new-avatar}"></label>
         <input type="file" id="avatar" th:field="*{avatar}">
         <p th:if="${#fields.hasErrors('avatar')}" th:errors="*{avatar}"></p>
     </div>
@@ -17,17 +17,17 @@
         <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
     </div>
     <div>
-        <label for="dateOfBirth">New date of birth:</label>
+        <label for="dateOfBirth" th:text="#{templates.user-edit.new-date-of-birth}"></label>
         <input type="date" id="dateOfBirth" th:field="*{dateOfBirth}">
         <p th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}"></p>
     </div>
     <div>
-        <label for="location">New location:</label>
+        <label for="location" th:text="#{templates.user-edit.new-location}"></label>
         <input type="text" id="location" th:field="*{location}">
         <p th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></p>
     </div>
     <div>
-        <p>Technology stack:</p>
+        <p th:text="#{templates.user-edit.technology-stack}"></p>
         <div th:each="i : ${#numbers.sequence(0, 9)}">
             <label th:for="'technologyStack' + ${i}"></label>
             <input type="text" th:id="'technologyStack' + ${i}" th:field="*{technologyStack[__${i}__]}"/>
@@ -36,7 +36,7 @@
         </div>
     </div>
     <div>
-        <p>Social links:</p>
+        <p th:text="#{templates.user-edit.social-media}"></p>
         <div th:each="i : ${#numbers.sequence(0, 4)}">
             <label th:for="'linksToMedia' + ${i}"></label>
             <input type="text" th:id="'linksToMedia' + ${i}" th:field="*{linksToMedia[__${i}__]}"/>

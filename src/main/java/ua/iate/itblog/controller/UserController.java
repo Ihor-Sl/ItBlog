@@ -1,16 +1,11 @@
 package ua.iate.itblog.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ua.iate.itblog.model.UpdateUserRequest;
 import ua.iate.itblog.model.User;
 import ua.iate.itblog.security.CustomUserDetails;
@@ -48,13 +43,14 @@ public class UserController {
     @PostMapping("/me/edit")
     public String editUserPost(@ModelAttribute("user") UpdateUserRequest updateUserRequest,
                                @AuthenticationPrincipal CustomUserDetails customUserDetails,
-                               BindingResult bindingResult) {
+                               BindingResult bindingResult, Model model) {
         User user = userService.findById(customUserDetails.getUser().getId());
         if (!user.getUsername().equals(updateUserRequest.getUsername()) &&
                 userService.existsByUsername(updateUserRequest.getUsername())) {
             bindingResult.rejectValue("username", "errors.user.username.exist");
         }
         if (bindingResult.hasErrors()) {
+            model.addAttribute("user", updateUserRequest);
             return "user-edit";
         }
         User updatedUser = userService.updateUser(updateUserRequest, customUserDetails.getUser().getId());
