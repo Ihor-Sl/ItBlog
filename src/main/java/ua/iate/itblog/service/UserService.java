@@ -67,4 +67,14 @@ public class UserService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("errors.user.email.not-found", email));
     }
+    public UpdateUserRequest mapToUpdateUserRequest(User user){
+        return UpdateUserRequest.builder()
+                .avatar(null)
+                .username(user.getUsername())
+                .location(user.getLocation())
+                .dateOfBirth(user.getDateOfBirth())
+                .technologyStack(user.getTechnologyStack())
+                .linksToMedia(user.getLinksToMedia())
+                .build();
+    }
 }

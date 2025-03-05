@@ -27,17 +27,8 @@ public class ValidFileValidator implements ConstraintValidator<ValidFile, Multip
             return true;
         }
         if (multipartFile.getSize() > maxSize) {
-            constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("File can't be more than " + maxSize + " MB!")
-                    .addConstraintViolation();
             return false;
         }
-        if (!allowedExtensions.isEmpty() && !allowedExtensions.contains(multipartFile.getContentType())) {
-            constraintValidatorContext.disableDefaultConstraintViolation();
-            constraintValidatorContext.buildConstraintViolationWithTemplate("File must be in " + String.join(", ", allowedExtensions))
-                    .addConstraintViolation();
-            return false;
-        }
-        return true;
+        return allowedExtensions.isEmpty() || allowedExtensions.contains(multipartFile.getContentType());
     }
 }

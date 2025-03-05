@@ -1,6 +1,7 @@
 package ua.iate.itblog.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import ua.iate.itblog.exception.NotFoundException;
 
 import java.util.Locale;
 
+@Slf4j
 @ControllerAdvice
 @RequiredArgsConstructor
 public class RootControllerAdvice {
@@ -27,7 +29,8 @@ public class RootControllerAdvice {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({Exception.class})
-    public String handleException() {
+    public String handleException(Exception e) {
+        log.error(e.getMessage(), e);
         return "server-error";
     }
 }

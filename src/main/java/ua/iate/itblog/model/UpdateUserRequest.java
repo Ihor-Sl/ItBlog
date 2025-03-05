@@ -23,18 +23,18 @@ public class UpdateUserRequest {
     @Size(min = 4, max = 64, message = "{errors.user.username.size}")
     private String username;
 
-    @ValidFile(maxSize = 3 * 1024 * 1024, allowedExtensions = {"jpeg", "webp", "png"})
+    @ValidFile(maxSize = 3 * 1024 * 1024, allowedExtensions = {"jpeg", "webp", "png"}, message = "{errors.user.avatar.valid-file}")
     private MultipartFile avatar;
 
-    @Past(message = "Date of birth must be in the past!")
+    @Past(message = "{errors.user.date-of-birth}")
     private LocalDate dateOfBirth;
 
-    @Size(max = 128, message = "Location can't be more than 128 characters!")
+    @Size(max = 128, message = "{errors.user.location}")
     private String location;
 
-    @Size(max = 10, message = "The size of technology stack can't be more than 10!")
-    private List<@Size(max = 64, message = "Technology stack entry cannot be more than 64 characters!") String> technologyStack;
+    @Size(max = 10, message = "{errors.user.technology-stack.stack-size}")
+    private List<@Size(max = 64, message = "{errors.user.technology-stack.component-size}") String> technologyStack;
 
-    @Size(max = 5, message = "The size of links of median can't be more than 5!")
-    private List<@URL(message = "Invalid URL!") String> linksToMedia;
+    @Size(max = 5, message = "{errors.user.social-media-links.size}")
+    private List<@URL(message = "{errors.user.social-media.url}") String> linksToMedia;
 }

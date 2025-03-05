@@ -29,18 +29,18 @@
     <div>
         <p th:text="#{templates.user-edit.technology-stack}"></p>
         <div th:each="i : ${#numbers.sequence(0, 9)}">
-            <label th:for="'technologyStack' + ${i}"></label>
+            <label th:for="'technologyStack' + ${i}" th:text="'Technology ' + ${i}"></label>
             <input type="text" th:id="'technologyStack' + ${i}" th:field="*{technologyStack[__${i}__]}"/>
-            <p th:if="${#fields.hasErrors('technologyStack[' + i + ']')}" th:errors="*{technologyStack[__${i}__]}"></p>
+            <p th:if="${#fields.hasErrors('technologyStack[__${i}__]')}" th:errors="*{technologyStack[__${i}__]}"></p>
             <br/>
         </div>
     </div>
     <div>
         <p th:text="#{templates.user-edit.social-media}"></p>
         <div th:each="i : ${#numbers.sequence(0, 4)}">
-            <label th:for="'linksToMedia' + ${i}"></label>
+            <label th:for="'linksToMedia' + ${i}" th:text="'Social Media ' + ${i}"></label>
             <input type="text" th:id="'linksToMedia' + ${i}" th:field="*{linksToMedia[__${i}__]}"/>
-            <p th:if="${#fields.hasErrors('linksToMedia[' + i + ']')}" th:errors="*{linksToMedia[__${i}__]}"></p>
+            <p th:if="${#fields.hasErrors('linksToMedia[__${i}__]')}" th:errors="*{linksToMedia[__${i}__]}"></p>
             <br/>
         </div>
     </div>

@@ -1,11 +1,13 @@
 package ua.iate.itblog.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ua.iate.itblog.model.UpdateUserRequest;
 import ua.iate.itblog.model.User;
 import ua.iate.itblog.security.CustomUserDetails;
@@ -36,12 +38,13 @@ public class UserController {
     @GetMapping("/me/edit")
     public String editUserGet(@AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
         User user = userService.findById(customUserDetails.getUser().getId());
-        model.addAttribute("user", user);
+        model.addAttribute("user", userService.mapToUpdateUserRequest(user));
         return "user-edit";
     }
 
     @PostMapping("/me/edit")
-    public String editUserPost(@ModelAttribute("user") UpdateUserRequest updateUserRequest,
+    public String editUserPost(@ModelAttribute("user") @Valid UpdateUserRequest updateUserRequest,
+                               @RequestParam(value = "avatar", required = false) MultipartFile avatar,
                                @AuthenticationPrincipal CustomUserDetails customUserDetails,
                                BindingResult bindingResult, Model model) {
         User user = userService.findById(customUserDetails.getUser().getId());
