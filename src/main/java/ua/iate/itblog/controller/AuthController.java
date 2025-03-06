@@ -14,6 +14,7 @@ import ua.iate.itblog.service.UserService;
 @Controller
 @RequiredArgsConstructor
 public class AuthController {
+
     private final UserService userService;
 
     @GetMapping("/login")
@@ -23,12 +24,12 @@ public class AuthController {
 
     @GetMapping("/registration")
     public String registrationGet(Model model) {
-        model.addAttribute("user", new CreateUserRequest());
+        model.addAttribute("createUserRequest", new CreateUserRequest());
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String registrationPost(@ModelAttribute("user") @Valid CreateUserRequest userRequest,
+    public String registrationPost(@ModelAttribute("createUserRequest") @Valid CreateUserRequest userRequest,
                                    BindingResult bindingResult) {
         if (userService.existsByEmail(userRequest.getEmail())) {
             bindingResult.rejectValue("email", "errors.user.email.exist");

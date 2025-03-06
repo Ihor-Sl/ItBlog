@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateUserRequest {
+
     @NotBlank(message = "{errors.user.email.not-null}")
     @Email(message = "{errors.user.email.size}")
     private String email;
@@ -22,7 +23,7 @@ public class CreateUserRequest {
     @NotNull(message = "{errors.user.password.not-null}")
     private String password;
 
-    @NotBlank(message = "{errors.user.username.not-null}")
     @Size(min = 4, max = 64, message = "{errors.user.username.size}")
+    @NotBlank(message = "{errors.user.username.not-null}")
     private String username;
 }

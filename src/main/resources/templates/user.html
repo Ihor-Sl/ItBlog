@@ -9,6 +9,24 @@
 <div>
     <h2 th:text="#{templates.user.information}">Information about</h2>
     <hr>
+    <p><span th:text="#{common.user.since}"></span> <span th:text="*{user.createdAt}"></span></p>
+    <p><span th:if="${user.dateOfBirth != null}" th:text="#{common.user.date-of-birth}"></span> <span th:text="*{user.dateOfBirth}"></span></p>
+    <p><span th:if="${user.location != null and !user.location.isEmpty()}" th:text="#{common.user.location}"></span> <span th:text="*{user.location}"></span></p>
+
+    <p th:if="${user.technologyStack == null or user.technologyStack.isEmpty()}" th:text="#{templates.user.technology-stack-empty}"></p>
+    <p th:if="${user.technologyStack != null and !user.technologyStack.isEmpty()}" th:text="#{common.user.technology-stack}"></p>
+    <ul th:if="${user.technologyStack != null and !user.technologyStack.isEmpty()}">
+        <li th:each="tech : ${user.technologyStack}" th:text="${tech}"></li>
+    </ul>
+
+    <p th:if="${user.linksToMedia == null or user.linksToMedia.isEmpty()}" th:text="#{templates.user.social-media-empty}"></p>
+    <p th:if="${user.linksToMedia != null and !user.linksToMedia.isEmpty()}" th:text="#{common.user.social-media}"></p>
+    <ul th:if="${user.linksToMedia != null and !user.linksToMedia.isEmpty()}">
+        <li th:each="link : ${user.linksToMedia}">
+            <a th:href="${link}" th:text="${link}" target="_blank"></a>
+        </li>
+    </ul>
+
     <p> <span th:text="#{common.user.field.username}">Username</span>: <span th:text="${user.username}"></span></p>
     <p> <span th:text="#{common.user.field.email}">Email</span>: <span th:text="${user.email}"></span></p>
 
