@@ -15,26 +15,48 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public User findById(String id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("errors.user.id.not-found", id));
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("errors.user.email.not-found", email));
+    }
 
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
     public void createUser(CreateUserRequest userRequest) {
-        User user = mapToUser(userRequest);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User user = User.builder()
+                .email(userRequest.getEmail())
+                .password(passwordEncoder.encode(userRequest.getPassword()))
+                .username(userRequest.getUsername())
+                .createdAt(LocalDate.now())
+                .build();
         userRepository.save(user);
     }
 
-    private User mapToUser(CreateUserRequest userRequest) {
-        User user = new User();
-        user.setEmail(userRequest.getEmail());
-        user.setPassword(userRequest.getPassword());
+    public User updateUser(UpdateUserRequest userRequest, String id) {
+        User user = findById(id);
+
+        userRequest.getTechnologyStack().removeIf(s -> s == null || s.trim().isBlank());
+        userRequest.getLinksToMedia().removeIf(s -> s == null || s.trim().isBlank());
+
         user.setUsername(userRequest.getUsername());
-        user.setCreatedAt(LocalDate.now());
-        return user;
+        user.setAvatar(userRequest.getAvatar().getName());
+        user.setDateOfBirth(userRequest.getDateOfBirth());
+        user.setLocation(userRequest.getLocation());
+        user.setTechnologyStack(userRequest.getTechnologyStack());
+        user.setLinksToMedia(userRequest.getLinksToMedia());
+
+        return userRepository.save(user);
     }
 
     public boolean existsByEmail(String email) {
@@ -45,29 +67,7 @@ public class UserService {
         return userRepository.existsByUsername(username);
     }
 
-    public User findById(String id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("errors.user.id.not-found", id));
-    }
-
-    public User updateUser(UpdateUserRequest userRequest, String id) {
-        User user = findById(id);
-        user.setAvatar(userRequest.getAvatar().getName());
-        user.setDateOfBirth(userRequest.getDateOfBirth());
-        user.setLocation(userRequest.getLocation());
-        userRequest.getTechnologyStack().removeIf(s -> s == null || s.trim().isBlank());
-        user.setTechnologyStack(userRequest.getTechnologyStack());
-        userRequest.getLinksToMedia().removeIf(s -> s == null || s.trim().isBlank());
-        user.setLinksToMedia(userRequest.getLinksToMedia());
-        user.setUsername(userRequest.getUsername());
-        return userRepository.save(user);
-    }
-
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("errors.user.email.not-found", email));
-    }
-    public UpdateUserRequest mapToUpdateUserRequest(User user){
+    public UpdateUserRequest mapToUpdateUserRequest(User user) {
         return UpdateUserRequest.builder()
                 .avatar(null)
                 .username(user.getUsername())

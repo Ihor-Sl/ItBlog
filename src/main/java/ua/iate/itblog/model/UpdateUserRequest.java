@@ -19,11 +19,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateUserRequest {
+
     @NotBlank(message = "{errors.user.username.not-null}")
     @Size(min = 4, max = 64, message = "{errors.user.username.size}")
     private String username;
 
-    @ValidFile(maxSize = 3 * 1024 * 1024, allowedExtensions = {"jpeg", "webp", "png"}, message = "{errors.user.avatar.valid-file}")
+    @ValidFile(
+            maxSize = 3 * 1024 * 1024,
+            allowedExtensions = {"jpeg", "jpg", "webp", "png"},
+            message = "{errors.user.avatar.valid-file}"
+    )
     private MultipartFile avatar;
 
     @Past(message = "{errors.user.date-of-birth}")

@@ -5,7 +5,7 @@
     <title th:text="#{templates.registration.html.title}">Registration</title>
 </head>
 <body>
-<form method="post" th:action="@{/registration}" th:object="${user}">
+<form method="post" th:action="@{/registration}" th:object="${createUserRequest}">
     <div>
         <label for="email" th:text="#{common.user.field.email}">Email:</label>
         <input type="email" id="email" th:field="*{email}">

@@ -29,6 +29,14 @@ public class ValidFileValidator implements ConstraintValidator<ValidFile, Multip
         if (multipartFile.getSize() > maxSize) {
             return false;
         }
-        return allowedExtensions.isEmpty() || allowedExtensions.contains(multipartFile.getContentType());
+        return allowedExtensions.isEmpty() || allowedExtensions.contains(getFileExtension(multipartFile));
+    }
+
+    private String getFileExtension(MultipartFile multipartFile) {
+        if (multipartFile == null || multipartFile.getOriginalFilename() == null) {
+            return null;
+        }
+        String filename = multipartFile.getOriginalFilename();
+        return filename.substring(filename.lastIndexOf(".") + 1);
     }
 }

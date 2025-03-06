@@ -13,9 +13,14 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {ValidFileValidator.class})
 public @interface ValidFile {
+
     String message() default "";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
+
     int maxSize() default 5 * 1024 * 1024;
+
     String[] allowedExtensions() default {};
 }

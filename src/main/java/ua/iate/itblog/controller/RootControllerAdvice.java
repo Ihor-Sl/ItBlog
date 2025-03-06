@@ -23,14 +23,6 @@ public class RootControllerAdvice {
     @ExceptionHandler({NotFoundException.class})
     public String handleNotFoundException(NotFoundException e, Model model, Locale locale) {
         model.addAttribute("message", messageSource.getMessage(e.getMessage(), e.getParams(), locale));
-
         return "not-found";
-    }
-
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler({Exception.class})
-    public String handleException(Exception e) {
-        log.error(e.getMessage(), e);
-        return "server-error";
     }
 }
