@@ -5,11 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ua.iate.itblog.model.UpdateUserRequest;
 import ua.iate.itblog.model.User;
 import ua.iate.itblog.security.SecurityUtils;
@@ -25,29 +21,34 @@ public class UserController {
     @GetMapping("/me")
     public String meGet(Model model) {
         User user = userService.findById(SecurityUtils.getCurrentUserIdOrThrow());
+        String avatarUrl = user.getAvatar() != null ? "/avatar/" + user.getAvatar() : null;
         model.addAttribute("user", user);
         model.addAttribute("showEditButton", true);
+        model.addAttribute("avatar", avatarUrl);
         return "user";
     }
 
     @GetMapping("/{id}")
     public String userByIdGet(@PathVariable("id") String id, Model model) {
         User user = userService.findById(id);
+        String avatarUrl = user.getAvatar() != null ? "/avatar/" + user.getAvatar() : null;
         model.addAttribute("user", user);
+        model.addAttribute("avatar", avatarUrl);
         return "user";
     }
 
     @GetMapping("/me/edit")
     public String meEditGet(Model model) {
         User user = userService.findById(SecurityUtils.getCurrentUserIdOrThrow());
+        String avatarUrl = user.getAvatar() != null ? "/avatar/" + user.getAvatar() : null;
         model.addAttribute("updateUserRequest", userService.mapToUpdateUserRequest(user));
+        model.addAttribute("avatar", avatarUrl);
         return "user-edit";
     }
 
     @PostMapping("/me/edit")
     public String meEditPost(@ModelAttribute("updateUserRequest") @Valid UpdateUserRequest updateUserRequest,
-                               BindingResult bindingResult,
-                               Model model) {
+                             BindingResult bindingResult, Model model) {
         User user = userService.findById(SecurityUtils.getCurrentUserIdOrThrow());
         if (!user.getUsername().equals(updateUserRequest.getUsername()) &&
                 userService.existsByUsername(updateUserRequest.getUsername())) {
