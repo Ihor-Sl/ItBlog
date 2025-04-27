@@ -23,6 +23,16 @@ services:
       MINIO_ROOT_PASSWORD: rootpassword
     command: server /data --console-address ":9090"
 
+  minio-setup:
+    build: .
+    depends_on:
+      - minio
+    environment:
+      MINIO_ACCESS_KEY: rootuser
+      MINIO_SECRET_KEY: rootpassword
+      MINIO_SERVER: http://minio:9000
+    entrypoint: ["sh", "-c", "until mc alias set myminio $MINIO_SERVER $MINIO_ACCESS_KEY $MINIO_SECRET_KEY; do echo 'Waiting for MinIO to be ready...'; sleep 5; done; mc mb myminio/bucket --ignore-existing"]
+
 volumes:
   mongodb_data: { }
   minio_data: { }

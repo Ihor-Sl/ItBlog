@@ -1,10 +1,10 @@
 package ua.iate.itblog.service;
 
-import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ua.iate.itblog.exception.NotFoundException;
 import ua.iate.itblog.model.CreateUserRequest;
 import ua.iate.itblog.model.UpdateUserRequest;
@@ -12,12 +12,9 @@ import ua.iate.itblog.model.User;
 import ua.iate.itblog.repository.UserRepository;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +22,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MinioService minioService;
+    private final ImageService imageService;
 
     public User findById(String id) {
         return userRepository.findById(id)
@@ -53,7 +50,7 @@ public class UserService {
 
     public User updateUser(UpdateUserRequest userRequest, String id) {
         User user = findById(id);
-        updateAvatar(user, userRequest);
+        updateAvatar(user, userRequest.getAvatar());
         userRequest.getTechnologyStack().removeIf(s -> s == null || s.trim().isBlank());
         userRequest.getLinksToMedia().removeIf(s -> s == null || s.trim().isBlank());
 
@@ -67,25 +64,23 @@ public class UserService {
     }
 
     @SneakyThrows
-    public void updateAvatar(User user, UpdateUserRequest userRequest) {
-        if (user.getAvatar() != null) {
-            minioService.deleteAvatar(user.getAvatar());
-        }
-
-        user.setAvatar(null);
-        Optional.ofNullable(userRequest.getAvatar())
-                .filter(avatar -> avatar.getSize() > 0.1)
-                .ifPresent(avatar -> {
-                    String avatarId = UUID.randomUUID().toString();
-                    try {
-                        minioService.uploadAvatar(avatar.getInputStream(), avatar.getContentType(), avatarId);
-                        user.setAvatar(avatarId);
-                    } catch (IOException | ServerException | InsufficientDataException | ErrorResponseException |
-                             NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException |
-                             XmlParserException | InternalException e) {
-                        e.printStackTrace();
-                    }
-                });
+    public void updateAvatar(User user, MultipartFile file) {
+        Optional.ofNullable(user.getAvatar()).ifPresent(imageService::delete);
+        Optional.ofNullable(file)
+                .filter(f -> !f.isEmpty())
+                .ifPresentOrElse(
+                        f -> {
+                            try {
+                                String fileName = imageService.upload(file.getInputStream(),
+                                        file.getContentType());
+                                user.setAvatar(fileName);
+                            } catch (IOException e) {
+                                System.out.println(e.getMessage());
+                                throw new RuntimeException(e);
+                            }
+                        },
+                        () -> user.setAvatar(null)
+                );
     }
 
     public boolean existsByEmail(String email) {
