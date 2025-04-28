@@ -8,6 +8,8 @@
 <h1 th:text="*{user.username}"></h1>
 <div>
     <h2 th:text="#{templates.user.information}">Information about</h2>
+    <h3 th:text="#{templates.user.avatar}">Avatar</h3>
+    <img th:src="${avatar != null ? avatar : '/default-avatar.jpg'}" alt="Avatar" />
     <hr>
     <p><span th:text="#{common.user.since}"></span> <span th:text="*{user.createdAt}"></span></p>
     <p><span th:if="${user.dateOfBirth != null}" th:text="#{common.user.date-of-birth}"></span> <span th:text="*{user.dateOfBirth}"></span></p>

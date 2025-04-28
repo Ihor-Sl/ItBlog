@@ -7,6 +7,7 @@
 <body>
 <form method="post" th:object="${updateUserRequest}" th:action="@{/users/me/edit}" enctype='multipart/form-data'>
     <div>
+        <img th:src="${avatar != null ? avatar : '/default-avatar.jpg'}" alt="Avatar" />
         <label for="avatar" th:text="#{templates.user-edit.new-avatar}"></label>
         <input type="file" id="avatar" th:field="*{avatar}">
         <p th:if="${#fields.hasErrors('avatar')}" th:errors="*{avatar}"></p>

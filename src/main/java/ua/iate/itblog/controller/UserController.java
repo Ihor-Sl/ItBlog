@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ua.iate.itblog.model.UpdateUserRequest;
-import ua.iate.itblog.model.User;
+import ua.iate.itblog.model.user.UpdateUserRequest;
+import ua.iate.itblog.model.user.User;
 import ua.iate.itblog.security.SecurityUtils;
+import ua.iate.itblog.service.ImageService;
 import ua.iate.itblog.service.UserService;
 
 @Controller
@@ -21,12 +22,14 @@ import ua.iate.itblog.service.UserService;
 public class UserController {
 
     private final UserService userService;
+    private final ImageService imageService;
 
     @GetMapping("/me")
     public String meGet(Model model) {
         User user = userService.findById(SecurityUtils.getCurrentUserIdOrThrow());
         model.addAttribute("user", user);
         model.addAttribute("showEditButton", true);
+        model.addAttribute("avatar", imageService.buildImageUrl(user.getAvatar()));
         return "user";
     }
 
@@ -34,6 +37,7 @@ public class UserController {
     public String userByIdGet(@PathVariable("id") String id, Model model) {
         User user = userService.findById(id);
         model.addAttribute("user", user);
+        model.addAttribute("avatar", imageService.buildImageUrl(user.getAvatar()));
         return "user";
     }
 
@@ -41,13 +45,13 @@ public class UserController {
     public String meEditGet(Model model) {
         User user = userService.findById(SecurityUtils.getCurrentUserIdOrThrow());
         model.addAttribute("updateUserRequest", userService.mapToUpdateUserRequest(user));
+        model.addAttribute("avatar", imageService.buildImageUrl(user.getAvatar()));
         return "user-edit";
     }
 
     @PostMapping("/me/edit")
     public String meEditPost(@ModelAttribute("updateUserRequest") @Valid UpdateUserRequest updateUserRequest,
-                               BindingResult bindingResult,
-                               Model model) {
+                             BindingResult bindingResult, Model model) {
         User user = userService.findById(SecurityUtils.getCurrentUserIdOrThrow());
         if (!user.getUsername().equals(updateUserRequest.getUsername()) &&
                 userService.existsByUsername(updateUserRequest.getUsername())) {

@@ -3,14 +3,16 @@ package ua.iate.itblog.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ua.iate.itblog.exception.NotFoundException;
-import ua.iate.itblog.model.CreateUserRequest;
-import ua.iate.itblog.model.UpdateUserRequest;
-import ua.iate.itblog.model.User;
+import ua.iate.itblog.model.user.CreateUserRequest;
+import ua.iate.itblog.model.user.UpdateUserRequest;
+import ua.iate.itblog.model.user.User;
 import ua.iate.itblog.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +20,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
 
     public User findById(String id) {
         return userRepository.findById(id)
@@ -45,18 +48,22 @@ public class UserService {
 
     public User updateUser(UpdateUserRequest userRequest, String id) {
         User user = findById(id);
-
+        updateAvatar(user, userRequest.getAvatar());
         userRequest.getTechnologyStack().removeIf(s -> s == null || s.trim().isBlank());
         userRequest.getLinksToMedia().removeIf(s -> s == null || s.trim().isBlank());
 
         user.setUsername(userRequest.getUsername());
-        user.setAvatar(userRequest.getAvatar().getName());
         user.setDateOfBirth(userRequest.getDateOfBirth());
         user.setLocation(userRequest.getLocation());
         user.setTechnologyStack(userRequest.getTechnologyStack());
         user.setLinksToMedia(userRequest.getLinksToMedia());
 
         return userRepository.save(user);
+    }
+
+    private void updateAvatar(User user, MultipartFile file) {
+        Optional.ofNullable(user.getAvatar()).ifPresent(imageService::delete);
+        user.setAvatar(file.isEmpty() ? null : imageService.upload(file));
     }
 
     public boolean existsByEmail(String email) {

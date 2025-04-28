@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import ua.iate.itblog.model.CreateUserRequest;
+import ua.iate.itblog.model.user.CreateUserRequest;
 import ua.iate.itblog.service.UserService;
 
 @Controller
