@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ua.iate.itblog.exception.NotFoundException;
-import ua.iate.itblog.model.User;
+import ua.iate.itblog.model.user.User;
 
 import java.util.Optional;
 

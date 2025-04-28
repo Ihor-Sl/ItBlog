@@ -2,21 +2,19 @@ package ua.iate.itblog.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import ua.iate.itblog.model.UpdateUserRequest;
-import ua.iate.itblog.model.User;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import ua.iate.itblog.model.user.UpdateUserRequest;
+import ua.iate.itblog.model.user.User;
 import ua.iate.itblog.security.SecurityUtils;
 import ua.iate.itblog.service.ImageService;
 import ua.iate.itblog.service.UserService;
-
-import java.io.InputStream;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,7 +29,7 @@ public class UserController {
         User user = userService.findById(SecurityUtils.getCurrentUserIdOrThrow());
         model.addAttribute("user", user);
         model.addAttribute("showEditButton", true);
-        model.addAttribute("avatar", imageService.getFileName(user.getAvatar()));
+        model.addAttribute("avatar", imageService.buildImageUrl(user.getAvatar()));
         return "user";
     }
 
@@ -39,7 +37,7 @@ public class UserController {
     public String userByIdGet(@PathVariable("id") String id, Model model) {
         User user = userService.findById(id);
         model.addAttribute("user", user);
-        model.addAttribute("avatar", imageService.getFileName(user.getAvatar()));
+        model.addAttribute("avatar", imageService.buildImageUrl(user.getAvatar()));
         return "user";
     }
 
@@ -47,7 +45,7 @@ public class UserController {
     public String meEditGet(Model model) {
         User user = userService.findById(SecurityUtils.getCurrentUserIdOrThrow());
         model.addAttribute("updateUserRequest", userService.mapToUpdateUserRequest(user));
-        model.addAttribute("avatar", imageService.getFileName(user.getAvatar()));
+        model.addAttribute("avatar", imageService.buildImageUrl(user.getAvatar()));
         return "user-edit";
     }
 
@@ -67,16 +65,5 @@ public class UserController {
         SecurityUtils.updateSecurityContext(updatedUser);
 
         return "redirect:/users/me";
-    }
-
-    @GetMapping("/avatar/{fileName}")
-    public ResponseEntity<InputStreamResource> getAvatar(@PathVariable String fileName){
-        InputStream avatarStream = imageService.getAvatar(fileName);
-        MediaType mediaType = MediaType.IMAGE_JPEG;
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileName + "   \"")
-
-                .contentType(mediaType)
-                .body(new InputStreamResource(avatarStream));
     }
 }

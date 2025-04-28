@@ -1,14 +1,7 @@
 package ua.iate.itblog.exception;
 
-import lombok.Getter;
-
-@Getter
-public class NotFoundException extends RuntimeException {
-
-    private final String[] params;
-
+public class NotFoundException extends InternationalizedException {
     public NotFoundException(String message, String... params) {
-        super(message);
-        this.params = params;
+        super(message, params);
     }
 }

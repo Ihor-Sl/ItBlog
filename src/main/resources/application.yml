@@ -10,6 +10,9 @@ spring:
       username: rootuser
       password: rootpassword
       authentication-database: admin
-minio:
-  endpoint: http://localhost:9000
-  bucketName: bucket
+
+images:
+  s3Endpoint: http://localhost:9000
+  bucketName: it-blog-images
+  accessKey: rootuser
+  secretKey: rootpassword

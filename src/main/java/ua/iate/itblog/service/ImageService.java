@@ -1,25 +1,41 @@
 package ua.iate.itblog.service;
 
-import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ua.iate.itblog.exception.ImageProccesingException;
+import org.springframework.web.multipart.MultipartFile;
+import ua.iate.itblog.exception.ImageProcessingException;
 
 import java.io.InputStream;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ImageService {
-    private final MinioClient minioClient;
-    private final int BUFFER_SIZE = 10485760;
 
-    @Value("${minio.bucketName}")
+    public static final int DEFAULT_PART_SIZE = -1;
+
+    private final MinioClient minioClient;
+
+    @Value("${images.s3Endpoint}")
+    private String endpoint;
+
+    @Value("${images.bucketName}")
     private String bucketName;
+
+    public String upload(MultipartFile file) {
+        try {
+            return upload(file.getInputStream(), file.getContentType());
+        } catch (Exception e) {
+            log.error("Cannot upload image", e);
+            throw new ImageProcessingException("errors.image.upload");
+        }
+    }
 
     public String upload(InputStream inputStream, String contentType) {
         try {
@@ -29,17 +45,13 @@ public class ImageService {
                     .bucket(bucketName)
                     .object(id + "." + extension)
                     .contentType(contentType)
-                    .stream(inputStream, -1, BUFFER_SIZE)
+                    .stream(inputStream, inputStream.available(), DEFAULT_PART_SIZE)
                     .build());
             return id + "." + extension;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw new ImageProccesingException("errors.user.avatar.upload");
+            log.error("Cannot upload image", e);
+            throw new ImageProcessingException("errors.image.upload");
         }
-    }
-
-    private String getExtension(String contentType) {
-        return contentType.split("/")[1];
     }
 
     public void delete(String imageFileName) {
@@ -50,25 +62,19 @@ public class ImageService {
                     .build());
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new ImageProccesingException("errors.user.avatar.delete");
+            throw new ImageProcessingException("errors.image.delete");
         }
     }
 
-    public InputStream getAvatar(String imageFileName) {
-        try {
-            return minioClient.getObject(
-                    GetObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(imageFileName)
-                            .build()
-            );
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw new ImageProccesingException("errors.user.avatar.get");
-        }
+    public String buildImageUrl(String imageFileName) {
+        return String.join("/", endpoint, bucketName, imageFileName);
     }
 
-    public String getFileName(String fileName){
-        return fileName != null ? "/users/avatar/" + fileName : null;
+    private String getExtension(String contentType) {
+        String[] split = contentType.split("/");
+        if (split.length > 1) {
+            return split[1];
+        }
+        return "bin";
     }
 }

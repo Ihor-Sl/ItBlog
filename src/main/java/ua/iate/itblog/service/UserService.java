@@ -1,17 +1,15 @@
 package ua.iate.itblog.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.iate.itblog.exception.NotFoundException;
-import ua.iate.itblog.model.CreateUserRequest;
-import ua.iate.itblog.model.UpdateUserRequest;
-import ua.iate.itblog.model.User;
+import ua.iate.itblog.model.user.CreateUserRequest;
+import ua.iate.itblog.model.user.UpdateUserRequest;
+import ua.iate.itblog.model.user.User;
 import ua.iate.itblog.repository.UserRepository;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -63,24 +61,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @SneakyThrows
-    public void updateAvatar(User user, MultipartFile file) {
+    private void updateAvatar(User user, MultipartFile file) {
         Optional.ofNullable(user.getAvatar()).ifPresent(imageService::delete);
-        Optional.ofNullable(file)
-                .filter(f -> !f.isEmpty())
-                .ifPresentOrElse(
-                        f -> {
-                            try {
-                                String fileName = imageService.upload(file.getInputStream(),
-                                        file.getContentType());
-                                user.setAvatar(fileName);
-                            } catch (IOException e) {
-                                System.out.println(e.getMessage());
-                                throw new RuntimeException(e);
-                            }
-                        },
-                        () -> user.setAvatar(null)
-                );
+        user.setAvatar(file.isEmpty() ? null : imageService.upload(file));
     }
 
     public boolean existsByEmail(String email) {
@@ -92,7 +75,6 @@ public class UserService {
     }
 
     public UpdateUserRequest mapToUpdateUserRequest(User user) {
-
         return UpdateUserRequest.builder()
                 .avatar(null)
                 .username(user.getUsername())

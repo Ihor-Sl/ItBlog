@@ -7,14 +7,21 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MinioConfig {
-    @Value("${minio.endpoint}")
+
+    @Value("${images.s3Endpoint}")
     private String endpoint;
 
+    @Value("${images.accessKey}")
+    private String accessKey;
+
+    @Value("${images.secretKey}")
+    private String secretKey;
 
     @Bean
     public MinioClient minioClient() {
         return MinioClient.builder()
                 .endpoint(endpoint)
+                .credentials(accessKey, secretKey)
                 .build();
     }
 }

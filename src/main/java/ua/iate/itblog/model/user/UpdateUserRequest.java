@@ -1,4 +1,4 @@
-package ua.iate.itblog.model;
+package ua.iate.itblog.model.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
