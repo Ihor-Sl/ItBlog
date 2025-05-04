@@ -30,7 +30,7 @@ public class PostController {
                 .orElse(false);
         model.addAttribute("user", userService.findById(post.getUserId()));
         model.addAttribute("post", post);
-        model.addAttribute("isCurrentUser", isCurrentUserPostOwner);
+        model.addAttribute("isCurrentUserPostOwner", isCurrentUserPostOwner);
         return "post";
     }
 
