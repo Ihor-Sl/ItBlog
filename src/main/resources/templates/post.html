@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Post</title>
+</head>
+<body>
+<h1 th:text="${post.title}"></h1>
+<div>
+    <h2 th:text="#{templates.post.content}">Content:</h2>
+    <p th:text="${post.content}">Content</p>
+    <p th:text="#{templates.post.created-at}">Created at:</p><span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+    <p  th:text="#{templates.post.edited-at}">Last update:</p><span th:text="${#temporals.format(post.updatedAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+    <p th:text="#{templates.post.author}">Author:</p><span th:text="${user.username}"></span>
+</div>
+<a th:if="${currentUser.id} == ${user.id}" th:text="#{templates.post.edit}" th:href="@{/posts/{postId}/edit-post(postId = ${post.id})}">Edit post</a>
+<form th:if="${currentUser.id} == ${user.id}" th:action="@{/posts/{postId}/delete(postId=${post.id})}" method="post">
+    <input type="hidden" name="_method" value="DELETE"/>
+    <button type="submit" th:text="#{templates.post.delete}">Delete</button>
+</form>
+</body>
+</html>

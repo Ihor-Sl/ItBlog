@@ -33,6 +33,7 @@
     <p> <span th:text="#{common.user.field.email}">Email</span>: <span th:text="${user.email}"></span></p>
 
     <a th:text="#{templates.user.edit}" th:if="${showEditButton}" th:href="@{/users/me/edit}">Edit profile</a>
+    <a th:text="#{templates.user.create-post}" th:href="@{/posts/create-post}">Create post</a>
 </div>
 </body>
 </html>
