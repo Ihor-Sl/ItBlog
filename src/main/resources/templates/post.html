@@ -13,8 +13,8 @@
     <p  th:text="#{templates.post.edited-at}">Last update:</p><span th:text="${#temporals.format(post.updatedAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
     <p th:text="#{templates.post.author}">Author:</p><span th:text="${user.username}"></span>
 </div>
-<a th:if="${currentUser.id} == ${user.id}" th:text="#{templates.post.edit}" th:href="@{/posts/{postId}/edit-post(postId = ${post.id})}">Edit post</a>
-<form th:if="${currentUser.id} == ${user.id}" th:action="@{/posts/{postId}/delete(postId=${post.id})}" method="post">
+<a th:if="${isCurrentUser} == true" th:text="#{templates.post.edit}" th:href="@{/posts/{postId}/edit-post(postId = ${post.id})}">Edit post</a>
+<form th:if="${isCurrentUser} == true" th:action="@{/posts/{postId}/delete(postId=${post.id})}" method="post">
     <input type="hidden" name="_method" value="DELETE"/>
     <button type="submit" th:text="#{templates.post.delete}">Delete</button>
 </form>

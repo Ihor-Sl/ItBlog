@@ -25,23 +25,25 @@ public class PostController {
     @GetMapping("/{postId}")
     public String showPost(@PathVariable String postId, Model model) {
         Post post = postService.findById(postId);
-        User currentUser = userService.findById(SecurityUtils.getCurrentUserIdOrThrow());
-        model.addAttribute("currentUser", currentUser);
+        boolean isCurrentUserPostOwner = SecurityUtils.getCurrentUserId()
+                .map(userId -> postService.isPostOwner(post.getId(), userId))
+                .orElse(false);
         model.addAttribute("user", userService.findById(post.getUserId()));
         model.addAttribute("post", post);
+        model.addAttribute("isCurrentUser", isCurrentUserPostOwner);
         return "post";
     }
 
     @GetMapping("/create-post")
-    public String createPostGet(Model model){
+    public String createPostGet(Model model) {
         model.addAttribute("createPostRequest", new CreatePostRequest());
         return "create-post";
     }
 
     @PostMapping("/create-post")
     public String createPost(@ModelAttribute @Valid CreatePostRequest createPostRequest,
-                             BindingResult bindingResult, Model model){
-        if(bindingResult.hasErrors()){
+                             BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
             model.addAttribute("createPostRequest", createPostRequest);
             return "create-post";
         }
@@ -52,7 +54,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}/edit-post")
-    public String editPostGet(@PathVariable String postId, Model model){
+    public String editPostGet(@PathVariable String postId, Model model) {
         model.addAttribute("updatePostRequest", new UpdatePostRequest());
         model.addAttribute("postId", postId);
         return "edit-post";
@@ -62,8 +64,8 @@ public class PostController {
     @PreAuthorize("@postService.isPostOwner(#postId, authentication.principal.user.id)")
     public String editPost(@ModelAttribute @Valid UpdatePostRequest updatePostRequest,
                            BindingResult bindingResult,
-                           @PathVariable String postId, Model model){
-        if(bindingResult.hasErrors()){
+                           @PathVariable String postId, Model model) {
+        if (bindingResult.hasErrors()) {
             model.addAttribute("updatePostRequest", updatePostRequest);
             model.addAttribute("postId", postId);
             return "edit-post";
@@ -74,7 +76,7 @@ public class PostController {
 
     @PostMapping("/{postId}/delete")
     @PreAuthorize("@postService.isPostOwner(#postId, authentication.principal.user.id)")
-    public String deletePost(@PathVariable String postId){
+    public String deletePost(@PathVariable String postId) {
         postService.delete(postService.findById(postId));
         return "redirect:/users/me";
     }
