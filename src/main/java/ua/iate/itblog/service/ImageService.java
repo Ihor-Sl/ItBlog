@@ -5,12 +5,14 @@ import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.iate.itblog.exception.ImageProcessingException;
 
 import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.UUID;
 
 @Slf4j
@@ -18,7 +20,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ImageService {
 
-    public static final int DEFAULT_PART_SIZE = -1;
+    public static final String DEFAULT_AVATAR_PATH = "/static/default-avatar.jpg";
+    private static final int DEFAULT_PART_SIZE = -1;
 
     private final MinioClient minioClient;
 
@@ -30,24 +33,23 @@ public class ImageService {
 
     public String upload(MultipartFile file) {
         try {
-            return upload(file.getInputStream(), file.getContentType());
+            return upload(file.getInputStream(), FilenameUtils.getExtension(file.getOriginalFilename()));
         } catch (Exception e) {
             log.error("Cannot upload image", e);
             throw new ImageProcessingException("errors.image.upload");
         }
     }
 
-    public String upload(InputStream inputStream, String contentType) {
+    public String upload(InputStream inputStream, String extension) {
         try {
-            String id = UUID.randomUUID().toString();
-            String extension = getExtension(contentType);
+            String filename = UUID.randomUUID() + "." + extension;
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(bucketName)
-                    .object(id + "." + extension)
-                    .contentType(contentType)
+                    .object(filename)
+                    .contentType(URLConnection.guessContentTypeFromName(filename))
                     .stream(inputStream, inputStream.available(), DEFAULT_PART_SIZE)
                     .build());
-            return id + "." + extension;
+            return filename;
         } catch (Exception e) {
             log.error("Cannot upload image", e);
             throw new ImageProcessingException("errors.image.upload");
@@ -67,14 +69,9 @@ public class ImageService {
     }
 
     public String buildImageUrl(String imageFileName) {
-        return String.join("/", endpoint, bucketName, imageFileName);
-    }
-
-    private String getExtension(String contentType) {
-        String[] split = contentType.split("/");
-        if (split.length > 1) {
-            return split[1];
+        if (imageFileName == null || imageFileName.isEmpty()) {
+            return DEFAULT_AVATAR_PATH;
         }
-        return "bin";
+        return String.join("/", endpoint, bucketName, imageFileName);
     }
 }

@@ -1,17 +1,20 @@
 package ua.iate.itblog.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ua.iate.itblog.exception.NotFoundException;
 import ua.iate.itblog.model.user.CreateUserRequest;
 import ua.iate.itblog.model.user.UpdateUserRequest;
+import ua.iate.itblog.exception.NotFoundException;
 import ua.iate.itblog.model.user.User;
+import ua.iate.itblog.model.user.UserSearchRequest;
 import ua.iate.itblog.repository.UserRepository;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,8 +22,8 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
+    private final PasswordEncoder passwordEncoder;
 
     public User findById(String id) {
         return userRepository.findById(id)
@@ -32,8 +35,8 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("errors.user.email.not-found", email));
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public Page<User> findAll(UserSearchRequest userSearchRequest, Pageable pageable) {
+        return userRepository.findAll(userSearchRequest, pageable);
     }
 
     public void createUser(CreateUserRequest userRequest) {
@@ -46,24 +49,18 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public User updateUser(UpdateUserRequest userRequest, String id) {
-        User user = findById(id);
-        updateAvatar(user, userRequest.getAvatar());
-        userRequest.getTechnologyStack().removeIf(s -> s == null || s.trim().isBlank());
-        userRequest.getLinksToMedia().removeIf(s -> s == null || s.trim().isBlank());
-
-        user.setUsername(userRequest.getUsername());
-        user.setDateOfBirth(userRequest.getDateOfBirth());
-        user.setLocation(userRequest.getLocation());
-        user.setTechnologyStack(userRequest.getTechnologyStack());
-        user.setLinksToMedia(userRequest.getLinksToMedia());
-
-        return userRepository.save(user);
-    }
-
-    private void updateAvatar(User user, MultipartFile file) {
+    public User update(User user, UpdateUserRequest updateUserRequest) {
+        MultipartFile file = updateUserRequest.getAvatar();
         Optional.ofNullable(user.getAvatar()).ifPresent(imageService::delete);
         user.setAvatar(file.isEmpty() ? null : imageService.upload(file));
+        updateUserRequest.getTechnologyStack().removeIf(StringUtils::isBlank);
+        updateUserRequest.getLinksToMedia().removeIf(StringUtils::isBlank);
+        user.setUsername(updateUserRequest.getUsername());
+        user.setDateOfBirth(updateUserRequest.getDateOfBirth());
+        user.setLocation(updateUserRequest.getLocation());
+        user.setTechnologyStack(updateUserRequest.getTechnologyStack());
+        user.setLinksToMedia(updateUserRequest.getLinksToMedia());
+        return userRepository.save(user);
     }
 
     public boolean existsByEmail(String email) {
@@ -72,16 +69,5 @@ public class UserService {
 
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
-    }
-
-    public UpdateUserRequest mapToUpdateUserRequest(User user) {
-        return UpdateUserRequest.builder()
-                .avatar(null)
-                .username(user.getUsername())
-                .location(user.getLocation())
-                .dateOfBirth(user.getDateOfBirth())
-                .technologyStack(user.getTechnologyStack())
-                .linksToMedia(user.getLinksToMedia())
-                .build();
     }
 }
