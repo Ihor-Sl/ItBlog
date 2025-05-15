@@ -11,6 +11,13 @@ services:
       MONGO_INITDB_ROOT_USERNAME: rootuser
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
   minio:
     image: minio/minio
     ports:
@@ -52,4 +59,5 @@ services:
 
 volumes:
   mongodb_data: { }
+  redis_data: { }
   minio_data: { }

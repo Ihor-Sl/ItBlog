@@ -7,9 +7,10 @@
 <body>
 <form method="post" th:object="${updateUserRequest}" th:action="@{/users/me/edit}" enctype='multipart/form-data'>
     <div>
-        <img th:src="${avatar != null ? avatar : '/default-avatar.jpg'}" alt="Avatar" />
+        <img id="avatarPreview" th:src="${avatarUrl}" alt="Avatar"/>
         <label for="avatar" th:text="#{templates.user-edit.new-avatar}"></label>
         <input type="file" id="avatar" th:field="*{avatar}">
+        <button type="button" th:text="#{templates.user-edit.reset-avatar}" onclick="resetAvatar()">Reset avatar</button>
         <p th:if="${#fields.hasErrors('avatar')}" th:errors="*{avatar}"></p>
     </div>
     <div>
@@ -47,5 +48,31 @@
     </div>
     <button th:text="#{templates.user-edit.submit}" type="submit">Edit</button>
 </form>
+<script th:inline="javascript">
+    const avatarInput = document.getElementById('avatar');
+    const avatarPreview = document.getElementById('avatarPreview');
+
+    (async () => {
+        const dataTransfer = new DataTransfer()
+        const avatarUrl = /*[[${avatarUrl}]]*/ "";
+        const response = await fetch(avatarUrl);
+        const blob = await response.blob();
+        const file = new File([blob], "image.jpg", { type: blob.type });
+        dataTransfer.items.add(file)
+        avatarInput.files = dataTransfer.files
+    })()
+
+    avatarInput.onchange = () => {
+        const [file] = avatarInput.files
+        if (file) {
+            avatarPreview.src = URL.createObjectURL(file)
+        }
+    }
+
+    const resetAvatar = () => {
+        avatarInput.value = ''
+        avatarPreview.src = '/static/default-avatar.jpg'
+    };
+</script>
 </body>
 </html>
