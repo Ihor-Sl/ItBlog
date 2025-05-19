@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfig {
 
     public static final int T_30_DAYS_IN_SECONDS = 2592000;
@@ -24,9 +24,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/login").permitAll();
                     auth.requestMatchers("/registration").permitAll();
+                    auth.requestMatchers("/users").permitAll();
                     auth.requestMatchers("/users/me").authenticated();
                     auth.requestMatchers("/posts/{postId}").permitAll();
                     auth.requestMatchers("/users/{id}").permitAll();
+                    auth.requestMatchers("/static/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .formLogin(formLogin -> {

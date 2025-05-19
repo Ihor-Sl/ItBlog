@@ -19,29 +19,29 @@ public class AuthController {
 
     @GetMapping("/login")
     public String loginGet() {
-        return "login";
+        return "auth/login";
     }
 
     @GetMapping("/registration")
     public String registrationGet(Model model) {
         model.addAttribute("createUserRequest", new CreateUserRequest());
-        return "registration";
+        return "auth/registration";
     }
 
     @PostMapping("/registration")
-    public String registrationPost(@ModelAttribute("createUserRequest") @Valid CreateUserRequest userRequest,
+    public String registrationPost(@ModelAttribute("createUserRequest") @Valid CreateUserRequest createUserRequest,
                                    BindingResult bindingResult) {
-        if (userService.existsByEmail(userRequest.getEmail())) {
+        if (userService.existsByEmail(createUserRequest.getEmail())) {
             bindingResult.rejectValue("email", "errors.user.email.exist");
         }
-        if (userService.existsByUsername(userRequest.getUsername())) {
+        if (userService.existsByUsername(createUserRequest.getUsername())) {
             bindingResult.rejectValue("username", "errors.user.username.exist");
         }
         if (bindingResult.hasErrors()) {
-            return "registration";
+            return "auth/registration";
         }
 
-        userService.createUser(userRequest);
+        userService.createUser(createUserRequest);
         return "redirect:/login";
     }
 }
