@@ -5,11 +5,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.Session;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.iate.itblog.dto.UserDto;
 import ua.iate.itblog.exception.NotFoundException;
-import ua.iate.itblog.model.user.*;
+import ua.iate.itblog.model.user.CreateUserRequest;
+import ua.iate.itblog.model.user.Role;
+import ua.iate.itblog.model.user.UpdateUserBannedRequest;
+import ua.iate.itblog.model.user.UpdateUserRequest;
+import ua.iate.itblog.model.user.User;
+import ua.iate.itblog.model.user.UserSearchRequest;
 import ua.iate.itblog.repository.UserRepository;
 
 import java.time.LocalDate;
@@ -23,6 +30,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
+    private final FindByIndexNameSessionRepository<? extends Session> sessionRepository;
 
     public User findById(String id) {
         return userRepository.findById(id)
@@ -83,8 +91,10 @@ public class UserService {
     public void updateBannedStatus(UpdateUserBannedRequest updateUserBannedRequest, String id) {
         User user = findById(id);
         user.setBannedUntil(updateUserBannedRequest.getBannedUntil());
+        sessionRepository.findByPrincipalName(user.getEmail()).keySet().forEach(sessionRepository::deleteById);
         userRepository.save(user);
     }
+
     public void updateBannedStatus(String id) {
         User user = findById(id);
         user.setBannedUntil(null);
@@ -97,10 +107,6 @@ public class UserService {
 
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
-    }
-
-    public boolean hasRoleAdmin(User user) {
-        return user.getRoles().contains(Role.ROLE_ADMIN);
     }
 
     public boolean hasRoleForEditBanStatus(String targetId, String whoId) {

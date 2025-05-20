@@ -29,6 +29,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/login").permitAll();
                     auth.requestMatchers("/registration").permitAll();
                     auth.requestMatchers("/users").permitAll();
+                    auth.requestMatchers("/posts").permitAll();
                     auth.requestMatchers("/users/me").authenticated();
                     auth.requestMatchers("/posts/{postId}").permitAll();
                     auth.requestMatchers("/users/{id}").permitAll();

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{templates.posts.html.title}">Posts</title>
+    <style>
+        .disabled {
+            pointer-events: none;
+            cursor: default;
+        }
+
+        ul {
+            display: flex;
+            list-style: none;
+        }
+
+        li {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+
+<h1 th:text="#{templates.post.search}">Post</h1>
+
+<form th:action="@{/posts}" method="get">
+    <div>
+        <label for="search" th:text="#{templates.post.search}">Search</label>
+        <input type="text" id="search" name="search" th:value="${search}" />
+    </div>
+
+    <div>
+        <button type="submit">Search</button>
+        <a th:href="@{/posts}">Clear</a>
+    </div>
+</form>
+
+<h2>Posts List</h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Content</th>
+        <th>Image</th>
+        <th>Likes</th>
+        <th>Created At</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="post : ${postsPage.content}">
+        <td><a th:text="${post.title}" th:href="@{/posts/{id}(id=${post.id})}">Title</a></td>
+        <td th:text="${post.content}">Content</td>
+        <td>
+            <img th:if="${post.imageUrl != null}" th:src="@{${post.imageUrl}}" width="100" alt="Post Image"/>
+        </td>
+        <td th:text="${post.likedUserIds != null ? post.likedUserIds.size() : 0}">Likes</td>
+        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">Created</td>
+    </tr>
+    </tbody>
+</table>
+
+<div>
+    <ul>
+        <li>
+            <a th:class="${postsPage.first ? 'disabled' : ''}"
+               th:href="@{/posts(page=0, size=${postsPage.size}, search=${search})}">First</a>
+        </li>
+
+        <li>
+            <a th:class="${postsPage.first ? 'disabled' : ''}"
+               th:href="@{/posts(page=${postsPage.number - 1}, size=${postsPage.size}, search=${search})}">Previous</a>
+        </li>
+
+        <!-- Page numbers -->
+        <li th:each="i : ${#numbers.sequence(
+                            (postsPage.number > 2 ? postsPage.number - 2 : 0),
+                            (postsPage.totalPages - postsPage.number > 3 ? postsPage.number + 2 : postsPage.totalPages - 1)
+                        )}">
+            <a th:href="@{/posts(page=${i}, size=${postsPage.size}, search=${search})}"
+               th:text="${i + 1}"
+               th:class="${i == postsPage.number ? 'disabled' : ''}"></a>
+        </li>
+
+        <li>
+            <a th:class="${postsPage.last ? 'disabled' : ''}"
+               th:href="@{/posts(page=${postsPage.number + 1}, size=${postsPage.size}, search=${search})}">Next</a>
+        </li>
+
+        <li>
+            <a th:class="${postsPage.last ? 'disabled' : ''}"
+               th:href="@{/posts(page=${postsPage.totalPages - 1}, size=${postsPage.size}, search=${search})}">Last</a>
+        </li>
+    </ul>
+</div>
+
+
+</body>
+</html>

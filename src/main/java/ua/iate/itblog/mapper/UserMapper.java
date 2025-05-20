@@ -16,6 +16,9 @@ public class UserMapper {
     private final ImageService imageService;
 
     public List<UserDto> mapToDto(List<User> users) {
+        if (users == null) {
+            return List.of();
+        }
         return users.stream().map(this::mapToDto).toList();
     }
 

@@ -19,6 +19,7 @@
     </style>
 </head>
 <body>
+<header th:replace="~{fragments/header :: header}"></header>
 
 <h1 th:text="#{templates.users.user-search}">User Search</h1>
 
@@ -128,9 +129,9 @@
     <tbody>
     <tr th:each="user : ${usersPage.content}">
         <td><img width="50px" height="50px" th:src="${user.avatarUrl}" alt="avatar"></td>
-        <td th:text="${user.username}">Username</td>
+        <td><a th:text="${user.username}" th:href="@{/users/{id}(id=${user.id})}">Username</a></td>
         <td th:text="${user.location}">Location</td>
-        <td th:text="${#strings.arrayJoin(user.technologyStack.toArray(), ', ')}">Tech Stack</td>
+        <td th:text="${user.technologyStack != null ? #strings.arrayJoin(user.technologyStack, ', ') : ''}">Tech Stack</td>
         <td th:text="${user.dateOfBirth}">Date of Birth</td>
     </tr>
     </tbody>

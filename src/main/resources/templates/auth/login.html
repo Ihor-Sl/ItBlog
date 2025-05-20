@@ -5,6 +5,8 @@
     <title th:text="#{templates.login.html.title}">Login</title>
 </head>
 <body>
+<header th:replace="~{fragments/header :: header}"></header>
+
 <form method="post" th:action="@{/login}">
     <div>
         <label for="name" th:text="#{common.user.field.email}">Email:</label>

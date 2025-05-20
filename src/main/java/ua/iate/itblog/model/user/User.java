@@ -16,13 +16,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Document(collection = "users")
+@Document(collection = User.COLLECTION_NAME)
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldNameConstants
 public class User implements Serializable {
+
+    public static final String COLLECTION_NAME = "users";
 
     @Id
     private String id;

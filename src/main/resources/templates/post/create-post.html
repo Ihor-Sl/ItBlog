@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{}">Create post</title>
+</head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+
+<form method="post" th:action="@{/posts/create}" th:object="${createPostRequest}" enctype="multipart/form-data">
+    <div>
+        <img id="imagePreview" src="/default-avatar.jpg" alt="Image"/>
+        <label for="image" th:text="#{templates.comment.image}"></label>
+        <input type="file" id="image" th:field="*{image}">
+        <button type="button" th:text="#{templates.comment.reset-image}" onclick="resetImage()">Reset image</button>
+        <p th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></p>
+    </div>
+    <div>
+        <label th:text="#{templates.create-post.title}" for="title">Title:</label>
+        <input type="text" id="title" th:field="*{title}"/>
+        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+    </div>
+    <div>
+        <label th:text="#{templates.create-post.content}" for="content">Content:</label>
+        <textarea id="content" th:field="*{content}"></textarea>
+        <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></p>
+    </div>
+    <button type="submit" th:text="#{templates.create-post.submit}">Submit</button>
+</form>
+<a th:href="@{/users/me}" th:text="#{templates.create-post.back}">Back to Profile</a>
+<script th:inline="javascript">
+    const avatarInput = document.getElementById('image');
+    const avatarPreview = document.getElementById('imagePreview');
+
+    avatarInput.onchange = () => {
+        const [file] = avatarInput.files
+        if (file) {
+            avatarPreview.src = URL.createObjectURL(file)
+        }
+    }
+
+    const resetImage = () => {
+        avatarInput.value = ''
+        avatarPreview.src = '/static/default-avatar.jpg'
+    };
+</script>
+</body>
+</html>

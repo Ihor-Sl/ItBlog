@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>404</title>
 </head>
 <body>
+<header th:replace="~{fragments/header :: header}"></header>
 <h1 th:text="#{templates.not-found.title}">Not found</h1>
 <h2 th:text="${message}">Message</h2>
 </body>
