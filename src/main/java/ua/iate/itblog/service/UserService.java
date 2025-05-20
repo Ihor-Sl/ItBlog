@@ -85,6 +85,11 @@ public class UserService {
         user.setBannedUntil(updateUserBannedRequest.getBannedUntil());
         userRepository.save(user);
     }
+    public void updateBannedStatus(String id) {
+        User user = findById(id);
+        user.setBannedUntil(null);
+        userRepository.save(user);
+    }
 
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);

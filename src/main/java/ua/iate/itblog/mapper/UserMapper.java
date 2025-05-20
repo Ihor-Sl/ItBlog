@@ -27,7 +27,7 @@ public class UserMapper {
                 .dateOfBirth(user.getDateOfBirth())
                 .location(user.getLocation())
                 .bannedUntil(user.getBannedUntil())
-                .role(user.getRoles())
+                .roles(user.getRoles())
                 .technologyStack(user.getTechnologyStack())
                 .linksToMedia(user.getLinksToMedia())
                 .createdAt(user.getCreatedAt())

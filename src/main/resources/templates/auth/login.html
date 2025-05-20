@@ -15,7 +15,22 @@
         <input id="password" name="password" type="password">
     </div>
     <div role="alert" th:if="${param.error}">
-        <p th:text="#{templates.login.error}">Invalid email or password!</p>
+        <p th:if="${#arrays.contains(param.error, 'bad_credentials')}"
+           th:text="#{templates.login.error}">Invalid email or password!</p>
+
+        <p th:if="${#arrays.contains(param.error, 'locked')}">
+            <span th:text="#{templates.login.blocked}">Your account is blocked.</span>
+            <br>
+            <span th:text="'До: ' + ${#temporals.format(session.bannedUntil, 'yyyy-MM-dd HH:mm')}">
+            Until time here
+        </span>
+        </p>
+    </div>
+    <div>
+        <label for="remember-me">
+            <input type="checkbox" id="remember-me" name="remember-me">
+            <span th:text="#{templates.login.remember-me}">Remember me</span>
+        </label>
     </div>
     <button type="submit" th:text="#{templates.login.submit}">Login</button>
 </form>

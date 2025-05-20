@@ -22,7 +22,7 @@ public class UserDto {
     private LocalDate dateOfBirth;
     private String location;
     private LocalDateTime bannedUntil;
-    private Set<Role> role;
+    private Set<Role> roles;
     private List<String> technologyStack;
     private List<String> linksToMedia;
     private LocalDate createdAt;

@@ -17,6 +17,7 @@ import ua.iate.itblog.security.SecurityUtils;
 import ua.iate.itblog.service.ImageService;
 import ua.iate.itblog.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -98,11 +99,7 @@ public class UserController {
 
     @PostMapping("/{id}/edit-role")
     @PreAuthorize("hasRole('ADMIN')")
-    public String editRolePost(@PathVariable("id") String id,
-                               BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "redirect:/users/" + id;
-        }
+    public String editRolePost(@PathVariable("id") String id) {
         userService.updateRole(id);
         return "redirect:/users/" + id;
     }
@@ -122,11 +119,8 @@ public class UserController {
 
     @PostMapping("/{id}/unblock")
     @PreAuthorize("@userService.hasRoleForEditBanStatus(#id, authentication.principal.user.id)")
-    public String unblock(@PathVariable("id") String id, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            return "redirect:/users/" + id;
-        }
-        userService.updateBannedStatus(null, id);
+    public String unblock(@PathVariable("id") String id){
+        userService.updateBannedStatus(id);
         return "redirect:/users/" + id;
     }
 }
