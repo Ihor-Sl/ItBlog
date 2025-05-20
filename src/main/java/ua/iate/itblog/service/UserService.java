@@ -43,6 +43,7 @@ public class UserService {
                 .email(userRequest.getEmail())
                 .password(passwordEncoder.encode(userRequest.getPassword()))
                 .username(userRequest.getUsername())
+                .roles(Set.of(Role.ROLE_USER))
                 .createdAt(LocalDate.now())
                 .build();
         userRepository.save(user);
@@ -64,19 +65,19 @@ public class UserService {
 
     public void updateRole(String id) {
         User user = findById(id);
-        Set<Role> role = user.getRole();
+        Set<Role> role = user.getRoles();
         Set<Role> updatedRole = updateRole(role);
-        user.setRole(updatedRole);
+        user.setRoles(updatedRole);
         userRepository.save(user);
     }
 
-    public Set<Role> updateRole(Set<Role> role) {
-        if (role.contains(Role.MODERATOR)) {
-            role.remove(Role.MODERATOR);
+    public Set<Role> updateRole(Set<Role> roles) {
+        if (roles.contains(Role.ROLE_MODERATOR)) {
+            roles.remove(Role.ROLE_MODERATOR);
         } else {
-            role.add(Role.MODERATOR);
+            roles.add(Role.ROLE_MODERATOR);
         }
-        return role;
+        return roles;
     }
 
     public void updateBannedStatus(UpdateUserBannedRequest updateUserBannedRequest, String id) {
@@ -93,18 +94,19 @@ public class UserService {
         return userRepository.existsByUsername(username);
     }
 
-    public boolean hasRoleForEditRole(User user) {
-        return user.getRole().contains(Role.ADMIN);
+    public boolean hasRoleAdmin(User user) {
+        return user.getRoles().contains(Role.ROLE_ADMIN);
     }
 
-    public boolean hasRoleForEditBanStatus(String id, User user) {
-        User userPage = findById(id);
-        if (user.getRole().contains(Role.ADMIN)) {
+    public boolean hasRoleForEditBanStatus(String targetId, String whoId) {
+        User target = findById(targetId);
+        User who = findById(whoId);
+        if (who.getRoles().contains(Role.ROLE_ADMIN)) {
             return true;
         }
-        return !userPage.getRole().contains(Role.MODERATOR) &&
-                !userPage.getRole().contains(Role.ADMIN)
-                && user.getRole().contains(Role.MODERATOR);
+        return !target.getRoles().contains(Role.ROLE_MODERATOR) &&
+                !target.getRoles().contains(Role.ROLE_ADMIN)
+                && who.getRoles().contains(Role.ROLE_MODERATOR);
     }
 
     public boolean userHasBan(UserDto user){

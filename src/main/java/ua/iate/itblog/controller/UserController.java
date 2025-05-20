@@ -50,6 +50,9 @@ public class UserController {
         UserDto userDto = userMapper.mapToDto(user);
         model.addAttribute("user", userDto);
         model.addAttribute("showEditButton", true);
+        model.addAttribute("updateUserBannedRequest", null);
+        model.addAttribute("currentUser", user);
+        model.addAttribute("userHasBan", false);
         return "user/user";
     }
 
@@ -57,10 +60,11 @@ public class UserController {
     public String userByIdGet(@PathVariable("id") String id, Model model) {
         User user = userService.findById(id);
         UserDto userDto = userMapper.mapToDto(user);
+        User currentUser = userService.findById(SecurityUtils.getCurrentUserIdOrThrow());
         model.addAttribute("user", userDto);
         model.addAttribute("avatar", imageService.buildImageUrl(user.getAvatar()));
         model.addAttribute("updateUserBannedRequest", new UpdateUserBannedRequest());
-        model.addAttribute("currentUser", SecurityUtils.getCurrentUserIdOrThrow());
+        model.addAttribute("currentUser", currentUser);
         model.addAttribute("userHasBan", userService.userHasBan(userDto));
         return "user/user";
     }
@@ -93,7 +97,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/edit-role")
-    @PreAuthorize("@userService.hasRoleForEditRole(authentication.principal.user)")
+    @PreAuthorize("hasRole('ADMIN')")
     public String editRolePost(@PathVariable("id") String id,
                                BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -104,7 +108,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/block")
-    @PreAuthorize("@userService.hasRoleForEditBanStatus(#id, authentication.principal.user)")
+    @PreAuthorize("@userService.hasRoleForEditBanStatus(#id, authentication.principal.user.id)")
     public String block(@PathVariable("id") String id,
     @ModelAttribute("updateUserBannedRequest") UpdateUserBannedRequest updateUserBannedRequest,
                                   BindingResult bindingResult, Model model){
@@ -117,8 +121,8 @@ public class UserController {
     }
 
     @PostMapping("/{id}/unblock")
-    @PreAuthorize("@userService.hasRoleForEditBanStatus(#id, authentication.principal.user)")
-    public String unblock(@PathVariable("id") String id, BindingResult bindingResult, Model model){
+    @PreAuthorize("@userService.hasRoleForEditBanStatus(#id, authentication.principal.user.id)")
+    public String unblock(@PathVariable("id") String id, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             return "redirect:/users/" + id;
         }
