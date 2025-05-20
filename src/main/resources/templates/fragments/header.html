@@ -1,0 +1,29 @@
+<header>
+    <nav>
+        <ul>
+            <li><a th:href="@{/}" th:text="#{menu.home}">Головна</a></li>
+
+            <li><a th:href="@{/posts}" th:text="#{menu.search-posts}">Пошук дописів</a></li>
+
+            <li><a th:href="@{/users}" th:text="#{menu.search-users}">Пошук користувачів</a></li>
+
+            <li th:if="${#authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/users/me}" th:text="#{menu.my-profile}">Мій профіль</a>
+            </li>
+
+            <li th:if="${#authorization.expression('!isAuthenticated()')}">
+                <a th:href="@{/login}" th:text="#{menu.login}">Вхід</a>
+            </li>
+
+            <li th:if="${#authorization.expression('isAuthenticated()')}">
+                <a th:href="@{/posts/create}" th:text="#{menu.create-post}">Створити</a>
+            </li>
+
+            <li th:if="${#authorization.expression('isAuthenticated()')}">
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" th:text="#{menu.logout}">Вийти</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+</header>

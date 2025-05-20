@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${post.title}">Post</title>
+</head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+
+<h1 th:text="${post.title}">Post Title</h1>
+
+<section>
+    <img th:src="${post.imageUrl}" alt="Image">
+    <h2 th:text="#{templates.post.content}">Content:</h2>
+    <p th:text="${post.content}">Post content goes here...</p>
+
+    <p>
+        <strong th:text="#{templates.post.created-at}">Created at:</strong>
+        <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')}">Date</span>
+    </p>
+
+    <p>
+        <strong th:text="#{templates.post.author}">Author:</strong>
+        <img th:src="${author.avatarUrl}" alt="Avatar">
+        <a th:href="@{/users/{id}(id=${author.id})}" th:text="${author.username}">Author Name</a>
+    </p>
+</section>
+
+<section>
+    <form th:action="@{/posts/{postId}/like(postId=${post.id})}" method="post" style="display:inline;">
+        <button type="submit" th:text="#{templates.post.like}">Like</button>
+    </form>
+
+    <form th:action="@{/posts/{postId}/dislike(postId=${post.id})}" method="post" style="display:inline;">
+        <button type="submit" th:text="#{templates.post.dislike}">Dislike</button>
+    </form>
+
+    <p>
+        <strong th:text="#{templates.post.likes}">Likes:</strong>
+        <span th:text="${post.likedUserIds != null ? post.likedUserIds.size() : 0}">0</span>
+    </p>
+    <p>
+        <strong th:text="#{templates.post.dislikes}">Dislikes:</strong>
+        <span th:text="${post.dislikedUserIds != null ? post.dislikedUserIds.size() : 0}">0</span>
+    </p>
+</section>
+
+
+<section th:if="${isCurrentUserPostOwner}">
+    <form th:action="@{/posts/{postId}/delete(postId=${post.id})}" method="post">
+        <input type="hidden" name="_method" value="DELETE"/>
+        <button type="submit" th:text="#{templates.post.delete}">Delete</button>
+    </form>
+</section>
+
+<section>
+    <h3 th:text="#{templates.comment.add}">Add Comment</h3>
+
+    <form th:action="@{/posts/{postId}/comment(postId=${post.id})}" method="post" th:object="${addCommentRequest}">
+        <textarea th:field="*{content}" th:placeholder="#{templates.comment.add-placeholder}"></textarea>
+        <br/>
+        <button type="submit" th:text="#{templates.comment.add-button}">Add Comment</button>
+        <div th:if="${#fields.hasErrors('content')}">
+            <p th:errors="*{content}">Content Error</p>
+        </div>
+    </form>
+</section>
+
+
+<section>
+    <h2 th:text="#{templates.post.comments}">Comments:</h2>
+
+    <div th:if="${post.comments != null and !post.comments.isEmpty()}">
+        <div th:each="comment : ${post.comments}" th:attr="id='comment-' + ${comment.id}">
+            <hr/>
+            <p><strong th:text="${comment.username}">Username</strong></p>
+            <p><img th:src="${comment.avatarUrl}" alt="Avatar" width="50" height="50"/></p>
+            <p th:text="${comment.content}">Comment content</p>
+
+            <p>
+                <em th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}">Created At</em>
+                <span th:if="${comment.updatedAt != null and comment.updatedAt != comment.createdAt}">
+            (<span th:text="#{templates.post.edited-at}">Edited</span>:
+            <em th:text="${#temporals.format(comment.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">Updated At</em>)
+        </span>
+            </p>
+
+            <form th:if="${comment.userId == currentUserId}"
+                  th:action="@{/posts/{postId}/comments/{commentId}/delete(postId=${post.id}, commentId=${comment.id})}"
+                  method="post">
+                <button type="submit" th:text="#{templates.comment.delete}">Delete</button>
+            </form>
+        </div>
+
+    </div>
+    <div th:if="${post.comments == null or post.comments.isEmpty()}">
+        <p>No comments yet.</p>
+    </div>
+</section>
+
+</body>
+</html>

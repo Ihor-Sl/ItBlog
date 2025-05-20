@@ -5,6 +5,8 @@
     <title th:text="${user.username}">Users</title>
 </head>
 <body>
+<header th:replace="~{fragments/header :: header}"></header>
+
 <h1 th:text="*{user.username}"></h1>
 <div>
     <h2 th:text="#{templates.user.information}">Information about</h2>
@@ -60,7 +62,7 @@
     </p>
 
     <a th:text="#{templates.user.edit}" th:if="${showEditButton}" th:href="@{/users/me/edit}">Edit profile</a>
-    <a th:text="#{templates.user.create-post}" th:href="@{/posts/create-post}">Create post</a>
+    <a th:text="#{templates.user.create-post}" th:href="@{/posts/create}">Create post</a>
 </div>
 </body>
 </html>

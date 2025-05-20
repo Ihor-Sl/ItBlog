@@ -5,6 +5,8 @@
     <title th:text="${updateUserRequest.username}">Edit</title>
 </head>
 <body>
+<header th:replace="~{fragments/header :: header}"></header>
+
 <form method="post" th:object="${updateUserRequest}" th:action="@{/users/me/edit}" enctype='multipart/form-data'>
     <div>
         <img id="avatarPreview" th:src="${avatarUrl}" alt="Avatar"/>
