@@ -26,6 +26,8 @@ public class UserMapper {
                 .avatarUrl(imageService.buildImageUrl(user.getAvatar()))
                 .dateOfBirth(user.getDateOfBirth())
                 .location(user.getLocation())
+                .bannedUntil(user.getBannedUntil())
+                .roles(user.getRoles())
                 .technologyStack(user.getTechnologyStack())
                 .linksToMedia(user.getLinksToMedia())
                 .createdAt(user.getCreatedAt())

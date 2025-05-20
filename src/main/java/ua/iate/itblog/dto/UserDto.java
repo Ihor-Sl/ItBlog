@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ua.iate.itblog.model.user.Role;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -18,6 +21,8 @@ public class UserDto {
     private String avatarUrl;
     private LocalDate dateOfBirth;
     private String location;
+    private LocalDateTime bannedUntil;
+    private Set<Role> roles;
     private List<String> technologyStack;
     private List<String> linksToMedia;
     private LocalDate createdAt;

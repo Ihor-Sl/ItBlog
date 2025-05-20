@@ -10,26 +10,54 @@
     <h2 th:text="#{templates.user.information}">Information about</h2>
     <h3 th:text="#{templates.user.avatar}">Avatar</h3>
     <img th:src="${user.avatarUrl}" alt="Avatar"/>
+    <form th:action="@{/users/{id}/edit-role(id = ${user.id})}" method="post"
+          th:if="${currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_ADMIN) && currentUser.username != user.username}">
+        <button th:if="${!user.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_MODERATOR)}" type="submit" th:text="#{templates.user.toggle}">Provide a moderator</button>
+        <button th:if="${user.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_MODERATOR)}" type="submit" th:text="#{templates.user.untoggle}">Remove the moderator</button>
+    </form>
+    <form method="post"
+          th:if="${user.bannedUntil == null && userHasBan == false && currentUser.username != user.username
+          && currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_ADMIN) ||
+          currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_MODERATOR)}"
+          th:action="@{/users/{id}/block(id = ${user.id})}" th:object="${updateUserBannedRequest}">
+        <label for="ban" th:text="#{templates.user.ban}">Ban</label>
+        <input type="datetime-local" th:field="*{bannedUntil}" id="ban"/>
+        <button type="submit" th:text="#{templates.user.ban}"></button>
+    </form>
+    <form method="post" th:action="@{/users/{id}/unblock(id = ${user.id})}"
+          th:if="${user.bannedUntil != null && userHasBan == true && currentUser.username != user.username  &&
+          currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_ADMIN) ||
+          currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_MODERATOR)}">
+        <button type="submit" th:text="#{templates.user.unblock}"></button>
+    </form>
+
     <hr>
     <p><span th:text="#{common.user.since}"></span> <span th:text="*{user.createdAt}">createdAt</span></p>
-    <p><span th:if="${user.dateOfBirth != null}" th:text="#{common.user.date-of-birth}"></span> <span th:text="*{user.dateOfBirth}">dateOfBirth</span></p>
-    <p><span th:if="${user.location != null and !user.location.isEmpty()}" th:text="#{common.user.location}"></span> <span th:text="*{user.location}">location</span></p>
+    <p><span th:if="${user.dateOfBirth != null}" th:text="#{common.user.date-of-birth}"></span> <span
+            th:text="*{user.dateOfBirth}">dateOfBirth</span></p>
+    <p><span th:if="${user.location != null and !user.location.isEmpty()}" th:text="#{common.user.location}"></span>
+        <span th:text="*{user.location}">location</span></p>
 
-    <p th:if="${user.technologyStack == null or user.technologyStack.isEmpty()}" th:text="#{templates.user.technology-stack-empty}"></p>
-    <p th:if="${user.technologyStack != null and !user.technologyStack.isEmpty()}" th:text="#{common.user.technology-stack}">technologyStack</p>
+    <p th:if="${user.technologyStack == null or user.technologyStack.isEmpty()}"
+       th:text="#{templates.user.technology-stack-empty}"></p>
+    <p th:if="${user.technologyStack != null and !user.technologyStack.isEmpty()}"
+       th:text="#{common.user.technology-stack}">technologyStack</p>
     <ul th:if="${user.technologyStack != null and !user.technologyStack.isEmpty()}">
         <li th:each="tech : ${user.technologyStack}" th:text="${tech}">technologyStack</li>
     </ul>
 
-    <p th:if="${user.linksToMedia == null or user.linksToMedia.isEmpty()}" th:text="#{templates.user.social-media-empty}"></p>
-    <p th:if="${user.linksToMedia != null and !user.linksToMedia.isEmpty()}" th:text="#{common.user.social-media}">linksToMedia</p>
+    <p th:if="${user.linksToMedia == null or user.linksToMedia.isEmpty()}"
+       th:text="#{templates.user.social-media-empty}"></p>
+    <p th:if="${user.linksToMedia != null and !user.linksToMedia.isEmpty()}" th:text="#{common.user.social-media}">
+        linksToMedia</p>
     <ul th:if="${user.linksToMedia != null and !user.linksToMedia.isEmpty()}">
         <li th:each="link : ${user.linksToMedia}">
             <a th:href="${link}" th:text="${link}" target="_blank">linksToMedia</a>
         </li>
     </ul>
 
-    <p> <span th:text="#{common.user.field.username}">Username</span>: <span th:text="${user.username}">username</span></p>
+    <p><span th:text="#{common.user.field.username}">Username</span>: <span th:text="${user.username}">username</span>
+    </p>
 
     <a th:text="#{templates.user.edit}" th:if="${showEditButton}" th:href="@{/users/me/edit}">Edit profile</a>
     <a th:text="#{templates.user.create-post}" th:href="@{/posts/create-post}">Create post</a>

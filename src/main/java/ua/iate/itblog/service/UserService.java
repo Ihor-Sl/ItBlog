@@ -7,23 +7,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ua.iate.itblog.model.user.CreateUserRequest;
-import ua.iate.itblog.model.user.UpdateUserRequest;
+import ua.iate.itblog.dto.UserDto;
 import ua.iate.itblog.exception.NotFoundException;
-import ua.iate.itblog.model.user.User;
-import ua.iate.itblog.model.user.UserSearchRequest;
+import ua.iate.itblog.model.user.*;
 import ua.iate.itblog.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ImageService imageService;
     private final PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
 
     public User findById(String id) {
         return userRepository.findById(id)
@@ -44,6 +43,7 @@ public class UserService {
                 .email(userRequest.getEmail())
                 .password(passwordEncoder.encode(userRequest.getPassword()))
                 .username(userRequest.getUsername())
+                .roles(Set.of(Role.ROLE_USER))
                 .createdAt(LocalDate.now())
                 .build();
         userRepository.save(user);
@@ -63,6 +63,34 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void updateRole(String id) {
+        User user = findById(id);
+        Set<Role> role = user.getRoles();
+        Set<Role> updatedRole = updateRole(role);
+        user.setRoles(updatedRole);
+        userRepository.save(user);
+    }
+
+    public Set<Role> updateRole(Set<Role> roles) {
+        if (roles.contains(Role.ROLE_MODERATOR)) {
+            roles.remove(Role.ROLE_MODERATOR);
+        } else {
+            roles.add(Role.ROLE_MODERATOR);
+        }
+        return roles;
+    }
+
+    public void updateBannedStatus(UpdateUserBannedRequest updateUserBannedRequest, String id) {
+        User user = findById(id);
+        user.setBannedUntil(updateUserBannedRequest.getBannedUntil());
+        userRepository.save(user);
+    }
+    public void updateBannedStatus(String id) {
+        User user = findById(id);
+        user.setBannedUntil(null);
+        userRepository.save(user);
+    }
+
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
@@ -70,4 +98,24 @@ public class UserService {
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
+
+    public boolean hasRoleAdmin(User user) {
+        return user.getRoles().contains(Role.ROLE_ADMIN);
+    }
+
+    public boolean hasRoleForEditBanStatus(String targetId, String whoId) {
+        User target = findById(targetId);
+        User who = findById(whoId);
+        if (who.getRoles().contains(Role.ROLE_ADMIN)) {
+            return true;
+        }
+        return !target.getRoles().contains(Role.ROLE_MODERATOR) &&
+                !target.getRoles().contains(Role.ROLE_ADMIN)
+                && who.getRoles().contains(Role.ROLE_MODERATOR);
+    }
+
+    public boolean userHasBan(UserDto user){
+        return user.getBannedUntil() != null;
+    }
+
 }
