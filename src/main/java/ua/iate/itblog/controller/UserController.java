@@ -5,19 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ua.iate.itblog.dto.UserDto;
 import ua.iate.itblog.mapper.UserMapper;
-import ua.iate.itblog.model.user.UpdateUserRequest;
-import ua.iate.itblog.model.user.User;
-import ua.iate.itblog.model.user.UserSearchRequest;
+import ua.iate.itblog.model.user.*;
 import ua.iate.itblog.security.SecurityUtils;
 import ua.iate.itblog.service.ImageService;
 import ua.iate.itblog.service.UserService;
@@ -64,6 +59,9 @@ public class UserController {
         UserDto userDto = userMapper.mapToDto(user);
         model.addAttribute("user", userDto);
         model.addAttribute("avatar", imageService.buildImageUrl(user.getAvatar()));
+        model.addAttribute("updateUserBannedRequest", new UpdateUserBannedRequest());
+        model.addAttribute("currentUser", SecurityUtils.getCurrentUserIdOrThrow());
+        model.addAttribute("userHasBan", userService.userHasBan(userDto));
         return "user/user";
     }
 
@@ -92,5 +90,39 @@ public class UserController {
         SecurityUtils.updateSecurityContext(updatedUser);
 
         return "redirect:/users/me";
+    }
+
+    @PostMapping("/{id}/edit-role")
+    @PreAuthorize("@userService.hasRoleForEditRole(authentication.principal.user)")
+    public String editRolePost(@PathVariable("id") String id,
+                               BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/users/" + id;
+        }
+        userService.updateRole(id);
+        return "redirect:/users/" + id;
+    }
+
+    @PostMapping("/{id}/block")
+    @PreAuthorize("@userService.hasRoleForEditBanStatus(#id, authentication.principal.user)")
+    public String block(@PathVariable("id") String id,
+    @ModelAttribute("updateUserBannedRequest") UpdateUserBannedRequest updateUserBannedRequest,
+                                  BindingResult bindingResult, Model model){
+        if(bindingResult.hasErrors()){
+            model.addAttribute("updateUserBannedRequest", updateUserBannedRequest);
+            return "redirect:/users/" + id;
+        }
+        userService.updateBannedStatus(updateUserBannedRequest, id);
+        return "redirect:/users/" + id;
+    }
+
+    @PostMapping("/{id}/unblock")
+    @PreAuthorize("@userService.hasRoleForEditBanStatus(#id, authentication.principal.user)")
+    public String unblock(@PathVariable("id") String id, BindingResult bindingResult, Model model){
+        if(bindingResult.hasErrors()){
+            return "redirect:/users/" + id;
+        }
+        userService.updateBannedStatus(null, id);
+        return "redirect:/users/" + id;
     }
 }

@@ -11,7 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Document(collection = "users")
 @Data
@@ -31,6 +33,10 @@ public class User implements Serializable {
 
     @Indexed(unique = true)
     private String username;
+
+    private Set<Role> role;
+
+    private LocalDateTime bannedUntil;
 
     private String avatar;
 

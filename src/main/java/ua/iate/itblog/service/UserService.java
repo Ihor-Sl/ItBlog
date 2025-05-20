@@ -7,23 +7,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ua.iate.itblog.model.user.CreateUserRequest;
-import ua.iate.itblog.model.user.UpdateUserRequest;
+import ua.iate.itblog.dto.UserDto;
 import ua.iate.itblog.exception.NotFoundException;
-import ua.iate.itblog.model.user.User;
-import ua.iate.itblog.model.user.UserSearchRequest;
+import ua.iate.itblog.model.user.*;
 import ua.iate.itblog.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ImageService imageService;
     private final PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
 
     public User findById(String id) {
         return userRepository.findById(id)
@@ -63,6 +62,29 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void updateRole(String id) {
+        User user = findById(id);
+        Set<Role> role = user.getRole();
+        Set<Role> updatedRole = updateRole(role);
+        user.setRole(updatedRole);
+        userRepository.save(user);
+    }
+
+    public Set<Role> updateRole(Set<Role> role) {
+        if (role.contains(Role.MODERATOR)) {
+            role.remove(Role.MODERATOR);
+        } else {
+            role.add(Role.MODERATOR);
+        }
+        return role;
+    }
+
+    public void updateBannedStatus(UpdateUserBannedRequest updateUserBannedRequest, String id) {
+        User user = findById(id);
+        user.setBannedUntil(updateUserBannedRequest.getBannedUntil());
+        userRepository.save(user);
+    }
+
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
@@ -70,4 +92,23 @@ public class UserService {
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
+
+    public boolean hasRoleForEditRole(User user) {
+        return user.getRole().contains(Role.ADMIN);
+    }
+
+    public boolean hasRoleForEditBanStatus(String id, User user) {
+        User userPage = findById(id);
+        if (user.getRole().contains(Role.ADMIN)) {
+            return true;
+        }
+        return !userPage.getRole().contains(Role.MODERATOR) &&
+                !userPage.getRole().contains(Role.ADMIN)
+                && user.getRole().contains(Role.MODERATOR);
+    }
+
+    public boolean userHasBan(UserDto user){
+        return user.getBannedUntil() != null;
+    }
+
 }

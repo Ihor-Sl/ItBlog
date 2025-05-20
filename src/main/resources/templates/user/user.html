@@ -10,6 +10,14 @@
     <h2 th:text="#{templates.user.information}">Information about</h2>
     <h3 th:text="#{templates.user.avatar}">Avatar</h3>
     <img th:src="${user.avatarUrl}" alt="Avatar"/>
+    <a th:if="${currentUser.role.contains(T(ua.iate.itblog.model.Role).ADMIN)}"
+       th:action="@{/{id}/edit-role(id = user.id)}" th:text="#{templates.user.edit-role}">Change role</a>
+    <form th:if="${user.bannedUntil == null && userHasBan == false}" th:action="@{/{id}/block(id = user.id)}" th:object="${updateUserBannedRequest}">
+        <label for="ban" th:text="#{templates.user.update-ban-status}">Ban</label>
+        <input type="datetime-local" th:field="*{bannedUntil}" id="ban"/>
+    </form>
+    <a  th:action="@{/{id}/unblock(id = user.id)}" th:if="${user.bannedUntil != null && userHasBan == true}" th:text="#{templates.user.unblock}">Unblock</a>
+
     <hr>
     <p><span th:text="#{common.user.since}"></span> <span th:text="*{user.createdAt}">createdAt</span></p>
     <p><span th:if="${user.dateOfBirth != null}" th:text="#{common.user.date-of-birth}"></span> <span th:text="*{user.dateOfBirth}">dateOfBirth</span></p>
