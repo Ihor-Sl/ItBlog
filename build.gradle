@@ -7,6 +7,10 @@ plugins {
 group = 'ua.iate'
 version = '0.0.1-SNAPSHOT'
 
+bootBuildImage {
+	imageName = "itblog"
+}
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)

@@ -1,10 +1,11 @@
-<header>
-    <nav>
-        <ul>
+<header class="main-header">
+    <nav class="navbar">
+        <div class="navbar-left">
+            <img th:src="@{/static/logo.png}" alt="Logo" class="logo">
+        </div>
+        <ul class="navbar-menu">
             <li><a th:href="@{/}" th:text="#{menu.home}">Головна</a></li>
-
             <li><a th:href="@{/posts}" th:text="#{menu.search-posts}">Пошук дописів</a></li>
-
             <li><a th:href="@{/users}" th:text="#{menu.search-users}">Пошук користувачів</a></li>
 
             <li th:if="${#authorization.expression('isAuthenticated()')}">
@@ -20,7 +21,7 @@
             </li>
 
             <li th:if="${#authorization.expression('isAuthenticated()')}">
-                <form th:action="@{/logout}" method="post" style="display:inline;">
+                <form th:action="@{/logout}" method="post" class="logout-form">
                     <button type="submit" th:text="#{menu.logout}">Вийти</button>
                 </form>
             </li>
