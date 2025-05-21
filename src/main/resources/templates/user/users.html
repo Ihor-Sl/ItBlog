@@ -2,21 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="#{templates.users.html.title}">Users</title>
-    <style>
-        .disabled {
-            pointer-events: none;
-            cursor: default;
-        }
-
-        ul {
-            display: flex;
-            list-style: none;
-        }
-
-        li {
-            margin: 5px;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/static/css/header.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base.css}">
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>

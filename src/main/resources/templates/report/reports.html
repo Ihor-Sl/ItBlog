@@ -2,16 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="#{templates.reports.html.title}">Reports</title>
-    <style>
-        ul {
-            display: flex;
-            list-style: none;
-        }
-
-        li {
-            margin: 5px;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/static/css/header.css}">
+    <link rel="stylesheet" th:href="@{/static/css/base.css}">
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
