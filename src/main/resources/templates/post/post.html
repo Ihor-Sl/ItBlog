@@ -80,8 +80,6 @@
             <p>
                 <em th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}">Created At</em>
                 <span th:if="${comment.updatedAt != null and comment.updatedAt != comment.createdAt}">
-            (<span th:text="#{templates.post.edited-at}">Edited</span>:
-            <em th:text="${#temporals.format(comment.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">Updated At</em>)
         </span>
             </p>
 
