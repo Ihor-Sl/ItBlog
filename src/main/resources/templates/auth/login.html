@@ -5,39 +5,48 @@
     <title th:text="#{templates.login.html.title}">Login</title>
     <link rel="stylesheet" th:href="@{/static/css/header.css}">
     <link rel="stylesheet" th:href="@{/static/css/base.css}">
+    <link rel="stylesheet" th:href="@{/static/css/login.css}">
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
 
-<form method="post" th:action="@{/login}">
-    <div>
-        <label for="name" th:text="#{common.user.field.email}">Email:</label>
-        <input id="name" name="email" type="email">
-    </div>
-    <div>
-        <label for="password" th:text="#{common.user.field.password}">Password:</label>
-        <input id="password" name="password" type="password">
-    </div>
-    <div role="alert" th:if="${param.error}">
-        <p th:if="${#arrays.contains(param.error, 'bad_credentials')}"
-           th:text="#{templates.login.error}">Invalid email or password!</p>
+<div class="login-container">
+    <h1 th:text="#{templates.login.html.title}">Login</h1>
 
-        <p th:if="${#arrays.contains(param.error, 'locked')}">
-            <span th:text="#{templates.login.blocked}">Your account is blocked.</span>
-            <br>
-            <span th:text="'До: ' + ${#temporals.format(session.bannedUntil, 'yyyy-MM-dd HH:mm')}">
-            Until time here
-        </span>
-        </p>
-    </div>
-    <div>
-        <label for="remember-me">
-            <input type="checkbox" id="remember-me" name="remember-me">
-            <span th:text="#{templates.login.remember-me}">Remember me</span>
-        </label>
-    </div>
-    <button type="submit" th:text="#{templates.login.submit}">Login</button>
-</form>
-<a th:href="@{/registration}" th:text="#{templates.login.registration.link}">Don't have account?</a>
+    <form method="post" th:action="@{/login}">
+        <div>
+            <label for="name" th:text="#{common.user.field.email}">Email:</label>
+            <input id="name" name="email" type="email" required>
+        </div>
+        <div>
+            <label for="password" th:text="#{common.user.field.password}">Password:</label>
+            <input id="password" name="password" type="password" required>
+        </div>
+
+        <div class="alert" role="alert" th:if="${param.error}">
+            <p th:if="${#arrays.contains(param.error, 'bad_credentials')}"
+               th:text="#{templates.login.error}">Invalid email or password!</p>
+
+            <p th:if="${#arrays.contains(param.error, 'locked')}">
+                <span th:text="#{templates.login.blocked}">Your account is blocked.</span><br>
+                <span th:text="'До: ' + ${#temporals.format(session.bannedUntil, 'yyyy-MM-dd HH:mm')}">
+                    Until time here
+                </span>
+            </p>
+        </div>
+
+        <div>
+            <label for="remember-me">
+                <input type="checkbox" id="remember-me" name="remember-me">
+                <span th:text="#{templates.login.remember-me}">Remember me</span>
+            </label>
+        </div>
+
+        <button type="submit" th:text="#{templates.login.submit}">Login</button>
+    </form>
+
+    <a th:href="@{/registration}" th:text="#{templates.login.registration.link}">Don't have account?</a>
+</div>
+
 </body>
 </html>
