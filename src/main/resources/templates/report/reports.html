@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{templates.reports.html.title}">Reports</title>
+    <style>
+        ul {
+            display: flex;
+            list-style: none;
+        }
+
+        li {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>TargetId</th>
+        <th>PostId</th>
+        <th>ReporterId</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="report: ${reports}">
+        <td th:text="${report.title}" ></td>
+        <td th:text="${report.description}"></td>
+        <td> <a th:href="@{/users/{id}(id = ${report.userId})}" th:text="#{templates.reports.target-link}"></a></td><td th:if="${#strings.isEmpty(report.postId)}">-</td>
+        <td th:unless="${#strings.isEmpty(report.postId)}">
+            <a th:href="@{/posts/{postId}(postId=${report.postId})}" th:text="#{templates.reports.post-link}"></a></td>
+        <td> <a th:href="@{/users/{id}(id = ${report.reporterId})}" th:text="#{templates.reports.reporter-link}"></a></td>
+        <td>
+            <form th:action="@{/reports/{reportId}/delete(reportId = ${report.id})}" method="post">
+                <button type="submit" th:text="#{templates.reports.delete}"></button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

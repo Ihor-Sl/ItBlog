@@ -2,12 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Головна</title>
+    <title th:text="#{templates.main-page.title}">Головна</title>
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
 
-<h1>Останні пости</h1>
+<h1 th:text="#{templates.main-page.last-posts}" >Останні пости</h1>
 <div th:each="post : ${latestPosts}">
     <div style="border: 1px solid gray; padding: 10px; margin-bottom: 10px;">
         <h2 th:text="${post.title}">Title</h2>
@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<h1>Популярні пости</h1>
+<h1 th:text="#{templates.main-page.popular-posts}" >Популярні пости</h1>
 <div th:each="post : ${popularPosts}">
     <div style="border: 1px solid gray; padding: 10px; margin-bottom: 10px;">
         <h2 th:text="${post.title}">Title</h2>

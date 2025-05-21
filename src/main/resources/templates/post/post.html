@@ -6,7 +6,7 @@
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
-
+<a th:text="#{templates.post.create-report}" th:if="${author.id != currentUserId}" th:href="@{/reports/create-report(postId = ${post.id}, userId = ${author.id}, reporterId = ${currentUserId})}">Create Report</a>
 <h1 th:text="${post.title}">Post Title</h1>
 
 <section>
