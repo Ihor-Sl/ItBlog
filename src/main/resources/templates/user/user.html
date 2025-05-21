@@ -8,6 +8,7 @@
 <header th:replace="~{fragments/header :: header}"></header>
 
 <h1 th:text="*{user.username}"></h1>
+<a th:text="#{templates.user.create-report}" th:if="${currentUser.username != user.username}" th:href="@{/reports/create-report(userId = ${user.id}, reporterId = ${currentUser.id})}">Create Report</a>
 <div>
     <h2 th:text="#{templates.user.information}">Information about</h2>
     <h3 th:text="#{templates.user.avatar}">Avatar</h3>
