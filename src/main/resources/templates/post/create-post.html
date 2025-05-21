@@ -5,31 +5,39 @@
     <title th:text="#{templates.post.create}">Create post</title>
     <link rel="stylesheet" th:href="@{/static/css/header.css}">
     <link rel="stylesheet" th:href="@{/static/css/base.css}">
+    <link rel="stylesheet" th:href="@{/static/css/create-post.css}">
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
 
-<form method="post" th:action="@{/posts/create}" th:object="${createPostRequest}" enctype="multipart/form-data">
-    <div>
-        <img id="imagePreview" src="/default-avatar.jpg" alt="Image"/>
-        <label for="image" th:text="#{templates.comment.image}"></label>
-        <input type="file" id="image" th:field="*{image}">
-        <button type="button" th:text="#{templates.comment.reset-image}" onclick="resetImage()">Reset image</button>
-        <p th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></p>
-    </div>
-    <div>
-        <label th:text="#{templates.create-post.title}" for="title">Title:</label>
-        <input type="text" id="title" th:field="*{title}"/>
-        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
-    </div>
-    <div>
-        <label th:text="#{templates.create-post.content}" for="content">Content:</label>
-        <textarea id="content" th:field="*{content}"></textarea>
-        <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></p>
-    </div>
-    <button type="submit" th:text="#{templates.create-post.submit}">Submit</button>
-</form>
-<a th:href="@{/users/me}" th:text="#{templates.create-post.back}">Back to Profile</a>
+<main class="create-post-container">
+    <form method="post" th:action="@{/posts/create}" th:object="${createPostRequest}" enctype="multipart/form-data" class="create-post-form">
+        <h1 th:text="#{templates.post.create}">Create post</h1>
+
+        <div class="form-group image-group">
+            <img id="imagePreview" src="/default-avatar.jpg" alt="Image" class="image-preview"/>
+            <label for="image" th:text="#{templates.comment.image}"></label>
+            <input type="file" id="image" th:field="*{image}">
+            <button type="button" th:text="#{templates.comment.reset-image}" onclick="resetImage()" class="reset-btn">Reset image</button>
+            <p class="error-msg" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></p>
+        </div>
+
+        <div class="form-group">
+            <label th:text="#{templates.create-post.title}" for="title">Title:</label>
+            <input type="text" id="title" th:field="*{title}"/>
+            <p class="error-msg" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+        </div>
+
+        <div class="form-group">
+            <label th:text="#{templates.create-post.content}" for="content">Content:</label>
+            <textarea id="content" th:field="*{content}" rows="6"></textarea>
+            <p class="error-msg" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></p>
+        </div>
+
+        <button type="submit" th:text="#{templates.create-post.submit}" class="submit-btn">Submit</button>
+    </form>
+</main>
+
 <script th:inline="javascript">
     const avatarInput = document.getElementById('image');
     const avatarPreview = document.getElementById('imagePreview');

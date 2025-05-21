@@ -5,37 +5,42 @@
     <title th:text="#{templates.main-page.title}">Головна</title>
     <link rel="stylesheet" th:href="@{/static/css/header.css}">
     <link rel="stylesheet" th:href="@{/static/css/base.css}">
+    <link rel="stylesheet" th:href="@{/static/css/index.css}">
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
 
-<h1 th:text="#{templates.main-page.last-posts}" >Останні пости</h1>
-<div th:each="post : ${latestPosts}">
-    <div style="border: 1px solid gray; padding: 10px; margin-bottom: 10px;">
-        <h2 th:text="${post.title}">Title</h2>
-        <p th:text="${post.content}">Content</p>
-        <a th:href="@{'/posts/' + ${post.id}}">Переглянути пост</a>
-        <div th:if="${post.imageUrl != null}">
-            <img th:src="${post.imageUrl}" alt="Зображення" style="max-width: 300px;">
-        </div>
-        <p>👍 <span th:text="${post.likedUserIds != null ? post.likedUserIds.size() : 0}">0</span>
-            | 👎 <span th:text="${post.dislikedUserIds != null ? post.dislikedUserIds.size() : 0}">0</span></p>
-    </div>
-</div>
+<div class="main-container">
 
-<h1 th:text="#{templates.main-page.popular-posts}" >Популярні пости</h1>
-<div th:each="post : ${popularPosts}">
-    <div style="border: 1px solid gray; padding: 10px; margin-bottom: 10px;">
-        <h2 th:text="${post.title}">Title</h2>
-        <p th:text="${post.content}">Content</p>
-        <a th:href="@{'/posts/' + ${post.id}}">Переглянути пост</a>
-        <div th:if="${post.imageUrl != null}">
-            <img th:src="${post.imageUrl}" alt="Зображення" style="max-width: 300px;">
+    <section class="latest-posts">
+        <h1 th:text="#{templates.main-page.last-posts}">Останні пости</h1>
+        <div th:each="post : ${latestPosts}">
+            <div class="post-card">
+                <h2 th:text="${post.title}">Title</h2>
+                <p th:text="${post.content}">Content</p>
+                <a th:href="@{'/posts/' + ${post.id}}">Переглянути пост</a>
+                <div th:if="${post.imageUrl != null}">
+                    <img th:src="${post.imageUrl}" alt="Зображення" />
+                </div>
+                <p class="likes-dislikes">
+                    ❤️ <span th:text="${post.likedUserIds != null ? post.likedUserIds.size() : 0}">0</span>
+                    |
+                    👎 <span th:text="${post.dislikedUserIds != null ? post.dislikedUserIds.size() : 0}">0</span>
+                </p>
+            </div>
         </div>
-        <p>👍 <span th:text="${post.likedUserIds != null ? post.likedUserIds.size() : 0}">0</span>
-            | 👎 <span th:text="${post.dislikedUserIds != null ? post.dislikedUserIds.size() : 0}">0</span></p>
-    </div>
-</div>
+    </section>
 
+    <aside class="popular-posts">
+        <h1 th:text="#{templates.main-page.popular-posts}">Популярні пости</h1>
+        <ul>
+            <li th:each="post : ${popularPosts}">
+                <a th:href="@{'/posts/' + ${post.id}}" th:text="${post.title}">Title</a>
+            </li>
+        </ul>
+    </aside>
+
+</div>
 </body>
+
 </html>
