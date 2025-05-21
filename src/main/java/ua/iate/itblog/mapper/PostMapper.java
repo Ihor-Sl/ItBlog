@@ -16,7 +16,7 @@ public class PostMapper {
     private final ImageService imageService;
     private final CommentMapper commentMapper;
 
-    public List<PostDto> mapToDto(List<PostWithComments> post) {
+    public List<PostDto> mapToDto(List<Post> post) {
         if (post == null) {
             return List.of();
         }

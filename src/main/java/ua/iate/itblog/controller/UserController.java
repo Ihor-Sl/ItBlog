@@ -9,15 +9,21 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ua.iate.itblog.dto.UserDto;
 import ua.iate.itblog.mapper.UserMapper;
-import ua.iate.itblog.model.user.*;
+import ua.iate.itblog.model.user.UpdateUserBannedRequest;
+import ua.iate.itblog.model.user.UpdateUserRequest;
+import ua.iate.itblog.model.user.User;
+import ua.iate.itblog.model.user.UserSearchRequest;
 import ua.iate.itblog.security.SecurityUtils;
 import ua.iate.itblog.service.ImageService;
 import ua.iate.itblog.service.UserService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -61,12 +67,13 @@ public class UserController {
     public String userByIdGet(@PathVariable("id") String id, Model model) {
         User user = userService.findById(id);
         UserDto userDto = userMapper.mapToDto(user);
-        User currentUser = userService.findById(SecurityUtils.getCurrentUserIdOrThrow());
+        User currentUser = SecurityUtils.getCurrentUserId().map(userService::findById).orElse(null);
         model.addAttribute("user", userDto);
         model.addAttribute("avatar", imageService.buildImageUrl(user.getAvatar()));
         model.addAttribute("updateUserBannedRequest", new UpdateUserBannedRequest());
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("userHasBan", userService.userHasBan(userDto));
+        model.addAttribute("showEditButton", false);
         return "user/user";
     }
 

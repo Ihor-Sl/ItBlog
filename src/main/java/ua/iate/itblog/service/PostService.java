@@ -18,6 +18,7 @@ import ua.iate.itblog.repository.PostRepository;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -59,6 +60,7 @@ public class PostService {
     public void delete(Post post) {
         Optional.ofNullable(post.getImage()).ifPresent(imageService::delete);
         postRepository.delete(post);
+        commentRepository.deleteAllByPostId(post.getId());
     }
 
     public boolean isPostOwner(String postId, String userId) {
@@ -115,5 +117,13 @@ public class PostService {
         }
 
         postRepository.save(post);
+    }
+
+    public List<Post> findTop10ByOrderByCreatedAtDesc() {
+        return postRepository.findTop10ByOrderByCreatedAtDesc();
+    }
+
+    public List<Post> findTop10ByOrderByLikedUserIdsDesc() {
+        return postRepository.findTop10ByOrderByLikedUserIdsDesc();
     }
 }

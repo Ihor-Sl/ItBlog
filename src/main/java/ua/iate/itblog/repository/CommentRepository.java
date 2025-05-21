@@ -5,5 +5,7 @@ import ua.iate.itblog.model.comment.Comment;
 
 public interface CommentRepository extends MongoRepository<Comment, String> {
     boolean existsByIdAndUserId(String commentId, String userId);
+
+    void deleteAllByPostId(String postId);
 }
 
