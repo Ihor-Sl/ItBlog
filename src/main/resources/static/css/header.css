@@ -134,3 +134,13 @@
     }
 }
 
+.language-switcher {
+    display: inline-block;
+    margin-left: 1rem;
+}
+
+.language-switcher select {
+    padding: 0.2rem;
+    font-size: 1rem;
+}
+
