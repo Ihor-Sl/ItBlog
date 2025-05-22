@@ -91,3 +91,46 @@
         text-align: left;
     }
 }
+
+.burger {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #f0f0f0;
+    cursor: pointer;
+    display: none;
+    margin-left: 1rem;
+}
+
+@media (max-width: 768px) {
+    .burger {
+        display: block;
+    }
+
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navbar-menu {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .navbar-menu.active {
+        display: flex;
+    }
+
+    .navbar-menu li {
+        width: 100%;
+    }
+
+    .navbar-menu a,
+    .logout-form button {
+        width: 100%;
+        text-align: left;
+    }
+}
+

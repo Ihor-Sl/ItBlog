@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title th:text="${post.title}">Post</title>
     <link rel="stylesheet" th:href="@{/static/css/header.css}">
@@ -68,7 +69,7 @@
             </label>
             <br/>
             <button class="add-comment-button" type="submit" th:text="#{templates.comment.add-button}">Add Comment</button>
-            <div th:if="${#fields.hasErrors('c      ontent')}">
+            <div th:if="${#fields.hasErrors('content')}">
                 <p th:errors="*{content}">Content Error</p>
             </div>
         </form>
