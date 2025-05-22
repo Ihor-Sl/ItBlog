@@ -5,66 +5,92 @@
     <title th:text="${user.username}">Users</title>
     <link rel="stylesheet" th:href="@{/static/css/header.css}">
     <link rel="stylesheet" th:href="@{/static/css/base.css}">
+    <link rel="stylesheet" th:href="@{/static/css/user.css}">
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
 
-<h1 th:text="*{user.username}"></h1>
-<a th:text="#{templates.user.create-report}" th:if="${currentUser.username != user.username}" th:href="@{/reports/create-report(userId = ${user.id}, reporterId = ${currentUser.id})}">Create Report</a>
-<div>
-    <h2 th:text="#{templates.user.information}">Information about</h2>
-    <h3 th:text="#{templates.user.avatar}">Avatar</h3>
-    <img th:src="${user.avatarUrl}" alt="Avatar"/>
-    <form th:action="@{/users/{id}/edit-role(id = ${user.id})}" method="post"
-          th:if="${currentUser != null && currentUser.roles != null && (currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_ADMIN) && currentUser.username != user.username)}">
-        <button th:if="${!user.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_MODERATOR)}" type="submit" th:text="#{templates.user.toggle}">Provide a moderator</button>
-        <button th:if="${user.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_MODERATOR)}" type="submit" th:text="#{templates.user.untoggle}">Remove the moderator</button>
-    </form>
-    <form method="post"
-          th:if="${currentUser != null && currentUser.roles != null && (user.bannedUntil == null && userHasBan == false && currentUser != null && currentUser.username != user.username &&
-          currentUser.roles != null && currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_ADMIN) ||
-          currentUser.roles != null && currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_MODERATOR))}"
-          th:action="@{/users/{id}/block(id = ${user.id})}" th:object="${updateUserBannedRequest}">
-        <label for="ban" th:text="#{templates.user.ban}">Ban</label>
-        <input type="datetime-local" th:field="*{bannedUntil}" id="ban"/>
-        <button type="submit" th:text="#{templates.user.ban}"></button>
-    </form>
-    <form method="post" th:action="@{/users/{id}/unblock(id = ${user.id})}"
-          th:if="${currentUser != null && currentUser.roles != null && (user.bannedUntil != null && userHasBan == true && currentUser.username != user.username  &&
-          currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_ADMIN) ||
-          currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_MODERATOR))}">
-        <button type="submit" th:text="#{templates.user.unblock}"></button>
-    </form>
+<div class="page-container">
 
-    <hr>
-    <p><span th:text="#{common.user.since}"></span> <span th:text="*{user.createdAt}">createdAt</span></p>
-    <p><span th:if="${user.dateOfBirth != null}" th:text="#{common.user.date-of-birth}"></span> <span
-            th:text="*{user.dateOfBirth}">dateOfBirth</span></p>
-    <p><span th:if="${user.location != null and !user.location.isEmpty()}" th:text="#{common.user.location}"></span>
-        <span th:text="*{user.location}">location</span></p>
+    <h1 th:text="*{user.username}"></h1>
 
-    <p th:if="${user.technologyStack == null or user.technologyStack.isEmpty()}"
-       th:text="#{templates.user.technology-stack-empty}"></p>
-    <p th:if="${user.technologyStack != null and !user.technologyStack.isEmpty()}"
-       th:text="#{common.user.technology-stack}">technologyStack</p>
-    <ul th:if="${user.technologyStack != null and !user.technologyStack.isEmpty()}">
-        <li th:each="tech : ${user.technologyStack}" th:text="${tech}">technologyStack</li>
-    </ul>
+    <a th:text="#{templates.user.create-report}"
+       th:if="${currentUser.username != user.username}"
+       th:href="@{/reports/create-report(userId = ${user.id}, reporterId = ${currentUser.id})}"
+       class="button-edit">Create Report</a>
 
-    <p th:if="${user.linksToMedia == null or user.linksToMedia.isEmpty()}"
-       th:text="#{templates.user.social-media-empty}"></p>
-    <p th:if="${user.linksToMedia != null and !user.linksToMedia.isEmpty()}" th:text="#{common.user.social-media}">
-        linksToMedia</p>
-    <ul th:if="${user.linksToMedia != null and !user.linksToMedia.isEmpty()}">
-        <li th:each="link : ${user.linksToMedia}">
-            <a th:href="${link}" th:text="${link}" target="_blank">linksToMedia</a>
-        </li>
-    </ul>
+    <div class="info-block">
+        <h2 th:text="#{templates.user.information}">Information about</h2>
+    </div>
 
-    <p><span th:text="#{common.user.field.username}">Username</span>: <span th:text="${user.username}">username</span>
-    </p>
+    <div class="info-block">
+        <h3 th:text="#{templates.user.avatar}">Avatar</h3>
+        <img class="user-avatar" th:src="${user.avatarUrl}" alt="Avatar"/>
+    </div>
 
-    <a th:text="#{templates.user.edit}" th:if="${showEditButton}" th:href="@{/users/me/edit}">Edit profile</a>
+    <div class="info-block">
+        <form th:action="@{/users/{id}/edit-role(id = ${user.id})}" method="post"
+              th:if="${currentUser != null && currentUser.roles != null && (currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_ADMIN) && currentUser.username != user.username)}">
+            <button th:if="${!user.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_MODERATOR)}"
+                    type="submit" th:text="#{templates.user.toggle}">Provide a moderator
+            </button>
+            <button th:if="${user.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_MODERATOR)}"
+                    type="submit" th:text="#{templates.user.untoggle}">Remove the moderator
+            </button>
+        </form>
+
+        <form method="post"
+              th:if="${currentUser != null && currentUser.roles != null && (user.bannedUntil == null && userHasBan == false && currentUser != null && currentUser.username != user.username &&
+              currentUser.roles != null && currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_ADMIN) ||
+              currentUser.roles != null && currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_MODERATOR))}"
+              th:action="@{/users/{id}/block(id = ${user.id})}" th:object="${updateUserBannedRequest}">
+            <label for="ban" th:text="#{templates.user.ban}">Ban</label>
+            <input type="datetime-local" th:field="*{bannedUntil}" id="ban"/>
+            <button type="submit" th:text="#{templates.user.ban}"></button>
+        </form>
+
+        <form method="post" th:action="@{/users/{id}/unblock(id = ${user.id})}"
+              th:if="${currentUser != null && currentUser.roles != null && (user.bannedUntil != null && userHasBan == true && currentUser.username != user.username  &&
+              currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_ADMIN) ||
+              currentUser.roles.contains(T(ua.iate.itblog.model.user.Role).ROLE_MODERATOR))}">
+            <button type="submit" th:text="#{templates.user.unblock}"></button>
+        </form>
+    </div>
+
+    <div class="info-block">
+        <hr>
+    </div>
+
+    <div class="info-block">
+        <p><span th:text="#{common.user.since}"></span> <span th:text="*{user.createdAt}">createdAt</span></p>
+        <p><span th:if="${user.dateOfBirth != null}" th:text="#{common.user.date-of-birth}"></span>
+            <span th:text="*{user.dateOfBirth}">dateOfBirth</span></p>
+        <p><span th:if="${user.location != null and !user.location.isEmpty()}" th:text="#{common.user.location}"></span>
+            <span th:text="*{user.location}">location</span></p>
+    </div>
+
+    <div class="info-block">
+        <p th:if="${user.technologyStack == null or user.technologyStack.isEmpty()}"
+           th:text="#{templates.user.technology-stack-empty}"></p>
+        <p th:if="${user.technologyStack != null and !user.technologyStack.isEmpty()}"
+           th:text="#{common.user.technology-stack}">technologyStack</p>
+        <ul th:if="${user.technologyStack != null and !user.technologyStack.isEmpty()}">
+            <li th:each="tech : ${user.technologyStack}" th:text="${tech}">technologyStack</li>
+        </ul>
+    </div>
+
+    <div class="info-block">
+        <p th:if="${user.linksToMedia == null or user.linksToMedia.isEmpty()}"
+           th:text="#{templates.user.social-media-empty}"></p>
+        <p th:if="${user.linksToMedia != null and !user.linksToMedia.isEmpty()}" th:text="#{common.user.social-media}">linksToMedia
+        </p>
+        <ul th:if="${user.linksToMedia != null and !user.linksToMedia.isEmpty()}">
+            <li th:each="link : ${user.linksToMedia}">
+                <a th:href="${link}" th:text="${link}" target="_blank">linksToMedia</a>
+            </li>
+        </ul>
+    </div>
+    <a th:text="#{templates.user.edit}" th:if="${showEditButton}" th:href="@{/users/me/edit}" class="button-edit">Edit profile</a>
 </div>
 </body>
 </html>

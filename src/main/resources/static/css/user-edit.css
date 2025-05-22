@@ -1,0 +1,91 @@
+main {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f6f8;
+    color: #212529;
+    margin: 0;
+    padding: 20px;
+}
+
+.page-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.edit-form {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.edit-form > div {
+    margin-bottom: 18px;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="file"] {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 15px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.avatar#avatarPreview {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #0d6efd;
+    margin-bottom: 12px;
+}
+
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 4px;
+}
+
+.submit-button,
+.reset-avatar-button{
+    background-color: #333;
+    color: white;
+    padding: 8px 14px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.reset-avatar-button:hover,.submit-button:hover,
+.reset-avatar-button[type="button"]:hover,
+.submit-button[type="button"]:hover{
+    background-color: #555;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    color: #444;
+}

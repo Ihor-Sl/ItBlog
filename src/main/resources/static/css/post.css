@@ -36,7 +36,7 @@ textarea {
     font-size: 14px;
 }
 
-button {
+.add-comment-button {
     background-color: #f0f0f0;
     border: 1px solid #aaa;
     padding: 5px 15px;
@@ -44,7 +44,7 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.add-comment-button:hover {
     background-color: #e0e0e0;
 }
 
@@ -226,5 +226,3 @@ hr {
     color: white;
     text-decoration: none;
 }
-
-

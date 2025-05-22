@@ -67,14 +67,12 @@
                 <textarea th:field="*{content}" th:placeholder="#{templates.comment.add-placeholder}"></textarea>
             </label>
             <br/>
-            <button type="submit" th:text="#{templates.comment.add-button}">Add Comment</button>
-            <div th:if="${#fields.hasErrors('content')}">
+            <button class="add-comment-button" type="submit" th:text="#{templates.comment.add-button}">Add Comment</button>
+            <div th:if="${#fields.hasErrors('c      ontent')}">
                 <p th:errors="*{content}">Content Error</p>
             </div>
         </form>
     </section>
-
-
     <section>
         <h2 th:text="#{templates.post.comments}">Comments:</h2>
 
@@ -101,9 +99,7 @@
                         Delete
                     </button>
                 </form>
-
             </div>
-
         </div>
         <div th:if="${post.comments == null or post.comments.isEmpty()}">
             <p th:text="#{templates.post.no-comments}">No comments yet.</p>

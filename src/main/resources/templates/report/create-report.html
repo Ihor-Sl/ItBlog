@@ -5,11 +5,12 @@
     <title th:text="#{templates.create-report.html.title}">Create report</title>
     <link rel="stylesheet" th:href="@{/static/css/header.css}">
     <link rel="stylesheet" th:href="@{/static/css/base.css}">
+    <link rel="stylesheet" th:href="@{/static/css/create-report.css}">
 </head>
 <body>
 <header th:replace="~{fragments/header :: header}"></header>
-
-<form method="post" th:action="@{/reports/create-report}" th:object="${createReportRequest}">
+<main>
+<form class="create-report-form" method="post" th:action="@{/reports/create-report}" th:object="${createReportRequest}">
     <input type="hidden" id="postId" name="postId" th:field="*{postId}">
     <input type="hidden" id="userId" name="userId" th:field="*{userId}">
     <input type="hidden" id="reporterId" name="reporterId" th:field="*{reporterId}">
@@ -18,12 +19,13 @@
         <input id="title" type="text" th:field="*{title}">
         <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
     </div>
-    <div>
+    <div class="report-description">
         <label for="description" th:text="#{templates.create-report.field.description}">Description:</label>
-        <input id="description" type="text" th:field="*{description}">
+        <textarea id="description" type="text" th:field="*{description}" rows="6" ></textarea>
         <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
     </div>
-    <button type="submit" th:text="#{templates.create-report.submit}">Submit</button>
+    <button class="submit" type="submit" th:text="#{templates.create-report.submit}">Submit</button>
 </form>
+</main>
 </body>
 </html>
