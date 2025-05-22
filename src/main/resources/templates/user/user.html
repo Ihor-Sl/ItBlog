@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title th:text="${user.username}">Users</title>
     <link rel="stylesheet" th:href="@{/static/css/header.css}">
@@ -15,7 +16,7 @@
     <h1 th:text="*{user.username}"></h1>
 
     <a th:text="#{templates.user.create-report}"
-       th:if="${currentUser.username != user.username}"
+       th:if="${currentUser != null && currentUser.username != user.username}"
        th:href="@{/reports/create-report(userId = ${user.id}, reporterId = ${currentUser.id})}"
        class="button-edit">Create Report</a>
 
