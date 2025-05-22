@@ -97,7 +97,14 @@ class UserServiceTest {
 
     @Test
     void testUpdateUser_withAvatarUpload_shouldSaveUser() {
-        User user = User.builder().avatar("oldAvatar.png").build();
+        User user = User.builder()
+                .avatar("oldAvatar.png")
+                .username("oldname")
+                .location("oldloc")
+                .technologyStack(new ArrayList<>())
+                .linksToMedia(new ArrayList<>())
+                .build();
+
         MultipartFile file = mock(MultipartFile.class);
         when(file.isEmpty()).thenReturn(false);
         when(imageService.upload(file)).thenReturn("newAvatar.png");
@@ -110,18 +117,20 @@ class UserServiceTest {
                 .linksToMedia(new ArrayList<>(List.of("github.com", "")))
                 .build();
 
-        user.setTechnologyStack(new ArrayList<>());
-        user.setLinksToMedia(new ArrayList<>());
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        User updatedUser = User.builder().build();
-        when(userRepository.save(any())).thenReturn(updatedUser);
+        User updatedUser = userService.update(user, request);
 
-        assertEquals("newname", user.getUsername());
-        assertEquals("newloc", user.getLocation());
-        assertEquals(List.of("Java", "Spring"), user.getTechnologyStack());
-        assertEquals(List.of("github.com"), user.getLinksToMedia());
-        assertEquals("newAvatar.png", user.getAvatar());
+        assertNotNull(updatedUser);
+        assertEquals("newname", updatedUser.getUsername());
+        assertEquals("newloc", updatedUser.getLocation());
+        assertEquals(List.of("Java", "Spring"), updatedUser.getTechnologyStack());
+        assertEquals(List.of("github.com"), updatedUser.getLinksToMedia());
+        assertEquals("newAvatar.png", updatedUser.getAvatar());
+
         verify(imageService).delete("oldAvatar.png");
+        verify(imageService).upload(file);
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
