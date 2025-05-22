@@ -1,0 +1,65 @@
+main {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+.card p {
+    margin: 8px 0;
+}
+
+.card strong {
+    color: #444;
+}
+
+.card a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.card a:hover {
+    text-decoration: underline;
+}
+
+.card .delete-form {
+    margin-top: 10px;
+}
+
+.card .submit {
+    background-color: #dc3545;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.card button:hover {
+    background-color: #bb2d3b;
+}

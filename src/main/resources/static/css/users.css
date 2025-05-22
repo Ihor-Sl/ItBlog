@@ -1,0 +1,201 @@
+.search-form {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.search-form input[type="text"] {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 1px solid #aaa;
+    border-radius: 8px 0 0 8px;
+    outline: none;
+    width: 220px;
+}
+
+.search-form button {
+    padding: 8px 12px;
+    border: 1px solid #aaa;
+    background-color: #333;
+    color: white;
+    font-size: 16px;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.search-form button:hover {
+    background-color: #555;
+}
+
+.advanced-form {
+    border: 1px solid #ddd;
+    background-color: #fafafa;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.age-range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.age-range input[type="number"] {
+    padding: 6px 10px;
+    font-size: 14px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    width: 100px;
+}
+
+.range-separator {
+    font-weight: bold;
+    color: #555;
+}
+
+.dynamic-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.dynamic-input-group input[type="text"] {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.btn-remove {
+    background-color: #d33;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0;
+    transition: background-color 0.2s;
+}
+
+.btn-remove:hover {
+    background-color: #a00;
+}
+
+.btn-add {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-add:hover {
+    background-color: #555;
+}
+
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 4px;
+}
+.btn-submit {
+    padding: 8px 12px;
+    border: 1px solid #aaa;
+    background-color: #333;
+    color: white;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.btn-submit:hover {
+    background-color: #555;
+}
+.users-container {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-top: 20px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.user-card {
+    flex: 0 0 320px;
+    border: 1px solid #aaa;
+    border-radius: 8px;
+    padding: 12px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 12px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.user-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.user-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    color: #333;
+}
+
+.user-username {
+    font-weight: bold;
+    font-size: 1.1em;
+    text-decoration: none;
+    color: #333;
+}
+
+.user-username:hover {
+    text-decoration: underline;
+}
+
+.user-location,
+.user-tech-stack,
+.user-dob {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.no-results {
+    font-style: italic;
+    color: #999;
+    margin-top: 20px;
+}
