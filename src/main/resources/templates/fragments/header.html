@@ -29,6 +29,16 @@
                     <button type="submit" th:text="#{menu.logout}">Вийти</button>
                 </form>
             </li>
+            <li>
+                <form method="get" action="#" class="language-switcher">
+                    <label>
+                        <select name="lang" onchange="this.form.submit()">
+                            <option value="uk" th:selected="${#locale=='uk'}">Українська</option>
+                            <option value="en" th:selected="${#locale=='en'}">English</option>
+                        </select>
+                    </label>
+                </form>
+            </li>
         </ul>
     </nav>
     <script>
